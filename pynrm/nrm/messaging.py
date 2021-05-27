@@ -39,7 +39,7 @@ def loadschema(ext, api):
         return warlock.model_factory(s)
 
 
-def send(apiname=None):
+def send(apiname=None, cons=dict):
     if apiname:
         model = loadschema("json", apiname)
     else:
@@ -50,7 +50,7 @@ def send(apiname=None):
         if model:
 
             def send(self, *args, **kwargs):
-                self.socket.send(json.dumps(model(dict(*args, **kwargs))).encode())
+                self.socket.send(json.dumps(model(cons(*args, **kwargs))).encode())
 
         else:
 
@@ -259,7 +259,15 @@ class DownstreamEventServer(RPCServer):
     """Implements the message layer server for the downstream event API."""
 
 
-@send("downstreamEvent")
+def downHeader(*args, **kwargs):
+    assert len(kwargs) == 2
+    assert len(args) == 0
+    ret = {"timestamp": kwargs.pop("timestamp")}
+    ret["info"] = kwargs
+    return ret
+
+
+@send("downstreamEvent", downHeader)
 class DownstreamEventClient(RPCClient):
     pass
 

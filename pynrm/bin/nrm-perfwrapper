@@ -39,8 +39,12 @@ class PerfWrapper(object):
         self.downstream_event.send(cmdPause={"cmdID": self.cmdID})
 
     def performance_report(self, performance):
+        # we want to provide the time of the event to nrm, but perf only gives
+        # us the timing since the start of the monitoring, so we use a second
+        # call to the clock here to get a time since epoch in nanoseconds
         self.downstream_event.send(
-            cmdPerformance={"cmdID": self.cmdID, "perf": performance}
+            timestamp=time.time_ns(),
+            cmdPerformance={"cmdID": self.cmdID, "perf": performance,},
         )
 
     def setup(self):
@@ -55,7 +59,6 @@ class PerfWrapper(object):
             exit(1)
         self.app_uuid = str(uuid.uuid4())
         logger.info("client uuid: %r", self.app_uuid)
-        # self.downstream_event.send(cmdStart={"cmdID": self.cmdID})
 
     def main(self):
         parser = argparse.ArgumentParser()

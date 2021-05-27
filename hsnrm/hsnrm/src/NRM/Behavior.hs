@@ -295,18 +295,33 @@ doControl input = do
     getTime (Controller.Reconfigure t) = t
 
 -- | Downstream event handler.
+-- Downstream message are events related to the performance or behavior of an
+-- application under control. This handler mostly deals with recording those
+-- event as part of the monitoring and handling discovery of process start/exit
+--
+-- To ensure decent timings on the monitoring side, downstream events all
+-- contain a timestamps in nanoseconds since the epoch.
 nrmDownstreamEvent ::
   U.Time ->
   DC.DownstreamClientID ->
   DEvent.Event ->
   NRM (CommonOutcome CPD.Measurement)
-nrmDownstreamEvent callTime clientid = \case
+nrmDownstreamEvent _callTime clientid (DEvent.Event timestamp info) =
+  nrmDownstreamEventHandleInfo clientid (U.nanoS timestamp) info
+
+-- | EventInfo handling, using lambda-case to do pattern matching
+nrmDownstreamEventHandleInfo ::
+  DC.DownstreamClientID ->
+  U.Time ->
+  DEvent.EventInfo ->
+  NRM (CommonOutcome CPD.Measurement)
+nrmDownstreamEventHandleInfo clientid timestamp = \case
   DEvent.CmdPerformance cmdID perf ->
     DCmID.fromText (toS clientid) & \case
       Nothing -> log "couldn't decode clientID to UUID" >> return ONotFound
       Just downstreamCmdID ->
         commonSP
-          callTime
+          timestamp
           (Sensor.DownstreamCmdKey downstreamCmdID)
           (U.fromOps perf & fromIntegral)
           >>= \case
@@ -325,11 +340,11 @@ nrmDownstreamEvent callTime clientid = \case
                     return OAdjustment
             OAdjustment -> return OAdjustment
             OOk m ->
-              pub (UPub.PubPerformance callTime cmdID perf)
+              pub (UPub.PubPerformance timestamp cmdID perf)
                 >> return (OOk m)
   DEvent.ThreadProgress downstreamThreadID payload ->
     commonSP
-      callTime
+      timestamp
       (Sensor.DownstreamThreadKey downstreamThreadID)
       (payload & U.fromProgress & fromIntegral)
       >>= \case
@@ -345,11 +360,11 @@ nrmDownstreamEvent callTime clientid = \case
               Just c -> registerDTT c downstreamThreadID
         OAdjustment -> return OAdjustment
         OOk m ->
-          pub (UPub.PubProgress callTime downstreamThreadID payload)
+          pub (UPub.PubProgress timestamp downstreamThreadID payload)
             >> return (OOk m)
   DEvent.ThreadPhaseContext downstreamThreadID phaseContext ->
     commonSP
-      callTime
+      timestamp
       (Sensor.DownstreamThreadKey downstreamThreadID)
       (DEvent.computetime phaseContext & fromIntegral)
       >>= \case
@@ -373,7 +388,7 @@ nrmDownstreamEvent callTime clientid = \case
             Just (_, sliceID, _) ->
               pub
                 ( UPub.PubPhaseContext
-                    callTime
+                    timestamp
                     downstreamThreadID
                     sliceID
                     phaseContext

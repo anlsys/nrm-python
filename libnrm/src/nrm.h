@@ -102,6 +102,8 @@ int nrm_send_phase_context(struct nrm_context *ctxt, unsigned int cpu,
 
 long long int nrm_timediff(struct nrm_context *ctxt, struct timespec end_time);
 
+long long int nrm_timeconv(struct timespec time);
+
 #ifdef __cplusplus
 }
 #endif

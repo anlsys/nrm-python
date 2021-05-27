@@ -117,7 +117,7 @@ int nrm_init(struct nrm_context *ctxt, const char *task_id) {
 
   /* app init */
   char buf[512];
-  assert(!clock_gettime(CLOCK_MONOTONIC, &ctxt->time));
+  assert(!clock_gettime(CLOCK_REALTIME, &ctxt->time));
   ctxt->acc = 0;
   return 0;
 }
@@ -125,13 +125,18 @@ int nrm_init(struct nrm_context *ctxt, const char *task_id) {
 int nrm_fini(struct nrm_context *ctxt) {
   char buf[512];
   int err;
+  struct timespec now;
+  long long int tn;
+  clock_gettime(CLOCK_REALTIME, &now);
+  tn = nrm_timeconv(now);
   assert(ctxt != NULL);
   if (ctxt->acc != 0) {
-    snprintf(buf, 512, NRM_THREADPROGRESS_FORMAT, (int)ctxt->acc, ctxt->cmd_id,
-             ctxt->task_id, ctxt->process_id, ctxt->rank_id, ctxt->thread_id);
+    snprintf(buf, 512, NRM_THREADPROGRESS_FORMAT, tn, (int)ctxt->acc,
+             ctxt->cmd_id, ctxt->task_id, ctxt->process_id, ctxt->rank_id,
+             ctxt->thread_id);
     err = nrm_net_send(ctxt, buf, 512, 0);
   }
-  snprintf(buf, 512, NRM_THREADPAUSE_FORMAT, ctxt->cmd_id, ctxt->task_id,
+  snprintf(buf, 512, NRM_THREADPAUSE_FORMAT, tn, ctxt->cmd_id, ctxt->task_id,
            ctxt->process_id, ctxt->rank_id, ctxt->thread_id);
   err = nrm_net_send(ctxt, buf, 512, 0);
   assert(err > 0);
@@ -143,12 +148,13 @@ int nrm_fini(struct nrm_context *ctxt) {
 int nrm_send_progress(struct nrm_context *ctxt, unsigned long progress) {
   char buf[512];
   struct timespec now;
-  clock_gettime(CLOCK_MONOTONIC, &now);
+  clock_gettime(CLOCK_REALTIME, &now);
   long long int timediff = nrm_timediff(ctxt, now);
+  long long int tn = nrm_timeconv(now);
   ctxt->acc += progress;
   if (timediff > nrm_ratelimit_threshold) {
-    snprintf(buf, 512, NRM_THREADPROGRESS_FORMAT, (int)ctxt->acc, ctxt->cmd_id,
-             ctxt->task_id, (int)ctxt->process_id, ctxt->rank_id,
+    snprintf(buf, 512, NRM_THREADPROGRESS_FORMAT, tn, (int)ctxt->acc,
+             ctxt->cmd_id, ctxt->task_id, (int)ctxt->process_id, ctxt->rank_id,
              ctxt->thread_id);
     int err = nrm_net_send(ctxt, buf, 512, ZMQ_DONTWAIT);
     if (err == -1) {
@@ -167,12 +173,13 @@ int nrm_send_phase_context(struct nrm_context *ctxt, unsigned int cpu,
                            unsigned long long int computeTime) {
   char buf[512];
   struct timespec now;
-  clock_gettime(CLOCK_MONOTONIC, &now);
+  clock_gettime(CLOCK_REALTIME, &now);
   long long int timediff = nrm_timediff(ctxt, now);
+  long long int tn = nrm_timeconv(now);
   ctxt->acc++;
   if (timediff > nrm_ratelimit_threshold) {
 
-    snprintf(buf, 512, NRM_THREADPHASECONTEXT_FORMAT, ctxt->cmd_id,
+    snprintf(buf, 512, NRM_THREADPHASECONTEXT_FORMAT, tn, ctxt->cmd_id,
              ctxt->task_id, ctxt->process_id, ctxt->rank_id, ctxt->thread_id,
              (int)cpu, (int)(ctxt->acc), (int)computeTime, (int)timediff);
     int err = nrm_net_send(ctxt, buf, 512, ZMQ_DONTWAIT);
@@ -190,6 +197,10 @@ int nrm_send_phase_context(struct nrm_context *ctxt, unsigned int cpu,
 
 long long int nrm_timediff(struct nrm_context *ctxt, struct timespec end_time) {
   long long int timediff = (end_time.tv_nsec - ctxt->time.tv_nsec) +
-                           1e9 * (end_time.tv_sec - ctxt->time.tv_sec);
+                           1000000000 * (end_time.tv_sec - ctxt->time.tv_sec);
   return timediff;
+}
+
+long long int nrm_timeconv(struct timespec time) {
+  return time.tv_sec * 1000000000 + time.tv_nsec;
 }

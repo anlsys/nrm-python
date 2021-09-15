@@ -36,7 +36,10 @@ class PerfWrapper(object):
         pass
 
     def shutdown(self):
-        self.downstream_event.send(cmdPause={"cmdID": self.cmdID})
+        self.downstream_event.send(
+                timestamp=time.time_ns(),
+                cmdPause={"cmdID": self.cmdID}
+        )
 
     def performance_report(self, performance):
         # we want to provide the time of the event to nrm, but perf only gives

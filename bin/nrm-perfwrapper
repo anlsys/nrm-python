@@ -76,6 +76,12 @@ class PerfWrapper(object):
             default=1.0,
         )
         parser.add_argument(
+            "-e",
+            "--event",
+            help="perf event to sample",
+            default="instructions",
+        )
+        parser.add_argument(
             "cmd", help="command and arguments", nargs=argparse.REMAINDER
         )
         args = parser.parse_args()
@@ -100,7 +106,7 @@ class PerfWrapper(object):
             perf_tool_path,
             "stat",
             "-e",
-            "instructions",
+            args.event,
             "-x",
             ",",
             "-I",
@@ -136,13 +142,13 @@ class PerfWrapper(object):
 
             time = float(tokens[0])
             if tokens[1] == "<not counted>":
-                instructions = 0
+                counter = 0
             else:
-                instructions = int(tokens[1])
-            ips = int(instructions / (time - last_time))
+                counter = int(tokens[1])
+            eps = int(counter / (time - last_time))
 
-            logger.info("instructions per second: %r", ips)
-            self.performance_report(ips)
+            logger.info("events per second: %r", eps)
+            self.performance_report(eps)
 
             last_time = time
 

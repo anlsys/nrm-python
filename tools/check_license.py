@@ -23,7 +23,7 @@ with open(__file__) as f:
     license = lines[lic_start_idx:lic_end_indx]
 
 fail_files = []
-for pyfile in glob.glob('../*/*.py') + glob.glob('../bin/*'):
+for pyfile in glob.glob('./*/*.py') + glob.glob('./bin/*'):
     with open(pyfile) as f:
         lines = f.readlines()
         if not all([i in lines for i in license]):

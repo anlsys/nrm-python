@@ -1,0 +1,47 @@
+name: nrm-CI
+on: [push, pull_request]
+jobs:
+    nrm-ci:
+
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                python-version: 3.8
+                check: [style, license, install]
+
+        env:
+            TERM: xterm-256color
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        defaults:
+            run:
+                shell: bash -l {0}
+
+        steps:
+        - uses: actions/checkout@v2
+        - name: Setup conda - Python ${{ matrix.python-version }}
+          uses: conda-incubator/setup-miniconda@v2
+          with:
+            activate-environment: condaenv
+            miniconda-version: "latest"
+            python-version: ${{ matrix.python-version }}
+            channels: conda-forge
+            channel-priority: flexible
+            auto-update-conda: true
+
+        - name: Style check
+          if: matrix.check == 'style'
+          run: |
+            pip install flake8
+            flake8
+
+        - name: License check
+          if: matrix.check == 'license'
+          run: |
+            python tools/check_license.py
+
+        - name: Install check
+          if: matrix.check == 'install'
+          run: |
+            pip install -e .

@@ -25,7 +25,6 @@ jobs:
             auto-update-conda: true
 
         - name: Style check
-          if: matrix.check == 'style'
           run: |
             pip install flake8
             flake8

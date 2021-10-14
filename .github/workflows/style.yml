@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-    nrm-style-checks:
+    check-flake8-style:
         runs-on: ubuntu-latest
         defaults:
             run:
@@ -29,7 +29,7 @@ jobs:
             pip install flake8
             flake8
 
-    nrm-license-checks:
+    check-license:
         runs-on: ubuntu-latest
         container: apache/skywalking-eyes
         steps:

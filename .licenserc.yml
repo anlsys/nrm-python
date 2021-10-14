@@ -16,4 +16,5 @@ header:
   paths-ignore:
     - 'doc/*'
     - 'notebooks/*'
+    - 'setup.py'
   comment: never

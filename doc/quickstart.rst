@@ -57,7 +57,7 @@ using Pip
 
 You should be able to get NRM and its dependencies on any machine with::
 
- pip install git+https://xgitlab.cels.anl.gov/argo/nrm.git
+ pip install git+https://github.com/anlsys/nrm-python.git
 
 And entering the resulting virtual environment with `pipenv shell`.
 

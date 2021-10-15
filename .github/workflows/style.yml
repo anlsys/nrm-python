@@ -1,0 +1,37 @@
+name: nrm-style-checks
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+    check-flake8-style:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                shell: bash -l {0}
+
+        steps:
+        - uses: actions/checkout@v2
+        - name: Setup conda
+          uses: conda-incubator/setup-miniconda@v2
+          with:
+            activate-environment: condaenv
+            miniconda-version: "latest"
+            python-version: 3.8
+            channels: conda-forge
+            channel-priority: flexible
+            auto-update-conda: true
+
+        - name: Style check
+          run: |
+            pip install flake8
+            flake8
+
+    check-license:
+        runs-on: ubuntu-latest
+        container: apache/skywalking-eyes
+        steps:
+        - uses: actions/checkout@v2
+        - run: /bin/license-eye -c .licenserc.yml -v debug header check

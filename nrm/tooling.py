@@ -97,7 +97,7 @@ def nrmd(configuration):
         subprocess.run(["pkill", "-f", "nrmd"])
         subprocess.run(["pkill", "nrmd"])
         completed = subprocess.run(
-            [shutil.which("nrmd"), "-y", json.dumps(configuration),]
+            [shutil.which("nrmd"), "-y", json.dumps(configuration), ]
         )
         if completed.returncode != 0:
             print("NRM daemon exited with exit code %d" % completed.returncode)

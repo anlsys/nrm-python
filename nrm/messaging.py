@@ -57,7 +57,7 @@ def send(apiname=None, cons=dict):
             def send(self, msg):
                 try:
                     m = msg.encode()
-                except Exception as e:
+                except Exception:
                     m = msg
                 self.socket.send(m)
 
@@ -94,7 +94,7 @@ def recv_callback_noapi():
             msg = frames[1]
             try:
                 identity = frames[0].decode()
-            except UnicodeDecodeError as e:
+            except UnicodeDecodeError:
                 identity = "unassigned"
             assert self.callback
             self.callback(msg, identity)

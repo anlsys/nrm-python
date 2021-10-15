@@ -21,7 +21,6 @@ import tornado.process as process
 from zmq.eventloop import ioloop
 from nrm.messaging import UpstreamRPCServer, UpstreamPubServer, DownstreamEventServer
 from dataclasses import dataclass
-import sys
 from typing import Any
 
 _logger = logging.getLogger("nrm")
@@ -162,8 +161,8 @@ class Daemon(object):
             self.cmds[cmdID] = p
             registerSuccess(p.proc.pid)
             _logger.info("Command start success.")
-        except:
-            _logger.error("Unexpected error:", sys.exc_info()[0])
+        except Exception as e:
+            _logger.error("Unexpected error:", e.__class__, e.args)
             registerFailed()
             _logger.error("Command start failure.")
 

@@ -25,6 +25,4 @@ jobs:
             auto-update-conda: true
 
         - name: Install check
-          if: matrix.check == 'install'
-          run: |
-            pip install -e .
+          run: pip install -e .

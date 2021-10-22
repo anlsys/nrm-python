@@ -1,7 +1,7 @@
 NRM-Python Documentation
 ========================
 
-The following is primarily a developer's guide for the NRM Python utilities.
+The following is a guide for the NRM Python API and utilities.
 
 If you know about NRM and are just looking to get it to run on your
 application, please visit the :doc:`quickstart <nrm-home:quickstart>` guide.

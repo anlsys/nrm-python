@@ -1,5 +1,5 @@
-NRM Example Jupyter Notebooks
-=============================
+NRM Python Notebooks
+====================
 
 
 .. toctree::
@@ -7,4 +7,3 @@ NRM Example Jupyter Notebooks
     :caption: Notebook Contents:
 
     notebooks/tutorial
-    notebooks/configuration

@@ -15,6 +15,7 @@ and the `notebooks`_ for python upstream client use.
    :caption: Contents:
 
    notebooks
+   pybindings
 
 Indices and tables
 ==================

@@ -1,5 +1,5 @@
-NRM Python Notebooks
-====================
+Jupyter Notebooks
+=================
 
 
 .. toctree::

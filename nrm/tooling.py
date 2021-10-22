@@ -43,6 +43,7 @@ class Action(NamedTuple):
     actuatorID: ActuatorID
     actuatorValue: ActuatorValue
 
+
 try:
     lib = nrm.sharedlib.UnsafeLib(os.environ.get("PYNRMSO"))
 except AttributeError:

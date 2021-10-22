@@ -15,7 +15,6 @@ import yaml
 import json
 import subprocess
 import shutil
-import inspect
 from contextlib import contextmanager
 import nrm.messaging
 from multiprocessing import Process

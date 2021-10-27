@@ -100,6 +100,9 @@ def nrmd(configuration):
     if the daemon terminates illegally.
 
     Example:
+
+    .. code-block:: python
+
         with nrmd({}) as d:
             cpd = d.get_cpd()
             print(cpd.actuators())

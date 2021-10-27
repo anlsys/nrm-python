@@ -1,7 +1,7 @@
 NRM-Python Documentation
 ========================
 
-The following is a guide for the NRM Python API and utilities.
+The following is a guide for the NRM Python API and command-line utilities.
 
 If you know about NRM and are just looking to get it to run on your
 application or use ``nrm`` and ``nrmd``, please visit the :doc:`quickstart <nrm-home:quickstart>` guide.
@@ -10,6 +10,7 @@ application or use ``nrm`` and ``nrmd``, please visit the :doc:`quickstart <nrm-
 .. toctree::
    :maxdepth: 2
 
+   NRM Home <https://nrm.readthedocs.io/en/main/>
    notebooks
 
 

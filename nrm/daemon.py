@@ -76,7 +76,7 @@ class Daemon(object):
 
     def do_signal(self, signum, frame):
         """
-            'do_signal' installs interruption and children death handler in the current
+            installs interruption and children death handler in the current
             ioloop round.
         """
         if signum == signal.SIGINT:
@@ -104,11 +104,13 @@ class Daemon(object):
 
     def wrap(self, name, *argsConfig, **kwargsConfig):
         """
-            'wrap' is a decorator that turns a shared library symbol into a
+            a decorator that turns a shared library symbol into a
             behavior-reacting function. It can process any symbol whose
-            underlying unpacked type is:
+            underlying unpacked type is::
+
                 Cfg -> NrmState -> <...> -> IO (Cfg, NrmState)
-            where <...> can be any number of arguments.
+
+            where ``<...>`` can be any number of arguments.
         """
 
         def r(*argsCallback, **kwargsCallback):
@@ -134,7 +136,7 @@ class Daemon(object):
     def cmd(self, cmdID, cmd, arguments, environment):
         """
             start a runtime subprocess and handles start/failure by registering
-            its cmdID with the state in the appropriate manner.
+            its ``cmdID`` with the state in the appropriate manner.
         """
         registerSuccess = self.wrap("registerCmdSuccess", cmdID)
         registerFailed = self.wrap("registerCmdFailure", cmdID)

@@ -43,7 +43,13 @@ class Action(NamedTuple):
     actuatorValue: ActuatorValue
 
 
-lib = nrm.sharedlib.UnsafeLib(os.environ["PYNRMSO"])
+try:
+    lib = nrm.sharedlib.UnsafeLib(os.environ.get("PYNRMSO"))
+except AttributeError:
+    if os.environ.get("NRM_GEN_DOCS"):
+        pass
+    else:
+        raise
 
 
 class CPD:
@@ -94,6 +100,9 @@ def nrmd(configuration):
     if the daemon terminates illegally.
 
     Example:
+
+    .. code-block:: python
+
         with nrmd({}) as d:
             cpd = d.get_cpd()
             print(cpd.actuators())
@@ -136,13 +145,19 @@ class NRMD:
         """ Upstream request: Run an application via NRM.
 
         Args:
-            cmd (str): The name of the binary (absolute or found in PATH)
-            args (List[str]): The list of arguments
-            manifest (dict): A dictionary containing the manifest, in the format
-              defined by hnrm/hsnrm/hsnrm/dhall/types/manifest.dhall.
-              Examples are available in the examples/manifests folder.
-            sliceID (str): An identifier for the sliceID to run the application
-              into.
+            cmd (str):
+                The name of the binary (absolute or found in PATH)
+
+            args (List[str]):
+                The list of arguments
+
+            manifest (dict):
+                A dictionary containing the manifest, in the format defined
+                by hnrm/hsnrm/hsnrm/dhall/types/manifest.dhall. Examples are a
+                vailable in the examples/manifests folder.
+
+            sliceID (str):
+                An identifier for the sliceID to run the application into.
         """
         lib.run(
             self.commonOpts,

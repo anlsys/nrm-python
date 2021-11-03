@@ -28,9 +28,9 @@ jobs:
             channel-priority: flexible
             auto-update-conda: true
 
-        -name: Install nrm-core dependencies
-         run: |
-          sudo apt-get intall pkg-config libzmq3-dev
+        - name: Install nrm-core dependencies
+          run: |
+           sudo apt-get install pkg-config libzmq3-dev
 
         - name: Install nrm-core release
           run: |

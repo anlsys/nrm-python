@@ -12,6 +12,10 @@ jobs:
             run:
                 shell: bash -l {0}
 
+        env:
+            PATH: $PWD/nrm-core-master/bin:$PATH
+            LD_LIBRARY_PATH: $PWD/nrm-core-master/lib:$LD_LIBRARY_PATH
+
         steps:
         - uses: actions/checkout@v2
         - name: Setup conda
@@ -24,5 +28,10 @@ jobs:
             channel-priority: flexible
             auto-update-conda: true
 
-        - name: Install check
+        - name: Install nrm-core release
+          run: |
+           wget https://github.com/anlsys/nrm-core/releases/download/master-build/nrm-core-master.tar.gz
+           mkdir ./nrm-core-master; tar xvf nrm-core-master.tar.gz -C ./nrm-core-master
+
+        - name: Pip install check
           run: pip install -e .

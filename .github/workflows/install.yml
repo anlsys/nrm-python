@@ -13,8 +13,8 @@ jobs:
                 shell: bash -l {0}
 
         env:
-            NRMSO: $PWD/nrm-core-master/lib/libnrm-core.so
-            PYNRMSO: $PWD/nrm-core-master/lib/libnrm-core-python.so
+            NRMSO: /home/runner/work/nrm-python/nrm-core-master/lib/libnrm-core.so
+            PYNRMSO: /home/runner/work/nrm-python/nrm-core-master/lib/libnrm-core-python.so
 
         steps:
         - uses: actions/checkout@v2
@@ -35,7 +35,7 @@ jobs:
         - name: Install nrm-core release
           run: |
            wget https://github.com/anlsys/nrm-core/releases/download/master-build/nrm-core-master.tar.gz
-           mkdir ./nrm-core-master; tar xvf nrm-core-master.tar.gz -C ./nrm-core-master
+           mkdir ../nrm-core-master; tar xvf nrm-core-master.tar.gz -C ../nrm-core-master
 
         - name: Pip install check
           run: pip install -e .

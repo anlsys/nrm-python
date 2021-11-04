@@ -12,7 +12,7 @@ jobs:
             run:
                 shell: bash -l {0}
 
-        ENV:
+        env:
             NRMSO: $PWD/nrm-core-master/lib/libnrm-core.so
             PYNRMSO: $PWD/nrm-core-master/lib/libnrm-core-python.so
 

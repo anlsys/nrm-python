@@ -31,6 +31,7 @@ jobs:
         - name: Install nrm-core dependencies
           run: |
            sudo apt-get install pkg-config libzmq3-dev
+           conda install libhwloc
 
         - name: Install nrm-core release
           run: |

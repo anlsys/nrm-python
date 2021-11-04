@@ -46,6 +46,7 @@ jobs:
           run: nrmd
 
         - name: Upload nrm log artifacts
+          if: always()
           uses: actions/upload-artifact@v2
           with:
             name: nrm-logs

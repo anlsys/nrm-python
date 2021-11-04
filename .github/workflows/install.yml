@@ -39,11 +39,10 @@ jobs:
            mkdir ../nrm-core; tar xvf nrm-core-master.tar.gz -C ../nrm-core
            cd ../nrm-core; pwd; ls
 
-        - name: Pip install check
-          run: pip install -e .
-
-        - name: nrmd
-          run: nrmd
+        - name: Python install and import check
+          run: |
+            pip install -e .
+            python -c "import nrm.tooling as nrm"
 
         - name: Upload nrm log artifacts
           if: always()

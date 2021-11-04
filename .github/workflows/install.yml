@@ -36,6 +36,7 @@ jobs:
           run: |
            wget https://github.com/anlsys/nrm-core/releases/download/master-build/nrm-core-master.tar.gz
            mkdir ../nrm-core-master; tar xvf nrm-core-master.tar.gz -C ../nrm-core-master
+           cd ../nrm-core-master/lib; pwd
 
         - name: Pip install check
           run: pip install -e .

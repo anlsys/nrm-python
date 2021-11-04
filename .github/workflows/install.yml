@@ -12,9 +12,9 @@ jobs:
             run:
                 shell: bash -l {0}
 
-        # env:
-        #     PATH: $PWD/nrm-core-master/bin:$PATH
-        #     LD_LIBRARY_PATH: $PWD/nrm-core-master/lib:$LD_LIBRARY_PATH
+        ENV:
+            NRMSO: $PWD/nrm-core-master/lib/libnrm-core.so
+            PYNRMSO: $PWD/nrm-core-master/lib/libnrm-core-python.so
 
         steps:
         - uses: actions/checkout@v2
@@ -39,3 +39,6 @@ jobs:
 
         - name: Pip install check
           run: pip install -e .
+
+        - name: nrmd
+          run: nrmd

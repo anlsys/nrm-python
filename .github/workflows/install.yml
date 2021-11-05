@@ -45,11 +45,6 @@ jobs:
             wget https://raw.githubusercontent.com/anlsys/nrm-core/master/tests/pyupstream/spawn.py
             python spawn.py
 
-        - name: nrmd initiation and nrm run check?
-          run: |
-           nrmd resources/defaults/nrmd.yml -y
-           nrm run resources/defaults/manifest.yml echo "helloworld"
-
         - name: Upload nrm log artifacts
           if: always()
           uses: actions/upload-artifact@v2

@@ -42,7 +42,15 @@ jobs:
         - name: Python install and import check
           run: |
             pip install -e .
-            python -c "import nrm.tooling as nrm"
+            wget https://raw.githubusercontent.com/anlsys/nrm-core/master/tests/pyupstream/spawn.py
+            python spawn.py
+
+        - name: nrmd initiation and nrm run check?
+          run: |
+           wget https://raw.githubusercontent.com/anlsys/nrm-core/master/resources/defaults/nrmd.json
+           nrmd -c nrmd.json
+           wget https://raw.githubusercontent.com/anlsys/nrm-core/master/resources/defaults/manifest.json
+           nrm run manifest.json echo "helloworld"
 
         - name: Upload nrm log artifacts
           if: always()

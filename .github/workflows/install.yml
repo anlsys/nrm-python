@@ -30,12 +30,11 @@ jobs:
 
         - name: Install nrm-core dependencies
           run: |
-           sudo apt-get install pkg-config libzmq3-dev
-           conda install libhwloc
+           sudo apt-get install pkg-config libzmq3-dev hwloc
 
         - name: Install nrm-core release
           run: |
-           wget https://github.com/anlsys/nrm-core/releases/download/master-build/nrm-core-master.tar.gz
+           wget https://github.com/anlsys/nrm-core/releases/download/v0.7.0/nrm-core-v0.7.0-x86_64-linux.tar.gz
            mkdir ../nrm-core; tar xvf nrm-core-master.tar.gz -C ../nrm-core
            cd ../nrm-core; pwd; ls
 

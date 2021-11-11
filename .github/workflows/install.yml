@@ -13,8 +13,8 @@ jobs:
                 shell: bash -l {0}
 
         env:
-            NRMSO: /home/runner/work/nrm-python/nrm-core/nrm-core-master/lib/libnrm-core.so
-            PYNRMSO: /home/runner/work/nrm-python/nrm-core/nrm-core-master/lib/libnrm-core-python.so
+            NRMSO: /home/runner/work/nrm-python/nrm-core/nrm-core-v0.7.0-x86_64-linux/lib/libnrm-core.so
+            PYNRMSO: /home/runner/work/nrm-python/nrm-core/nrm-core-v0.7.0-x86_64-linux/lib/libnrm-core-python.so
 
         steps:
         - uses: actions/checkout@v2
@@ -35,7 +35,7 @@ jobs:
         - name: Install nrm-core release
           run: |
            wget https://github.com/anlsys/nrm-core/releases/download/v0.7.0/nrm-core-v0.7.0-x86_64-linux.tar.gz
-           mkdir ../nrm-core; tar xvf nrm-core-master.tar.gz -C ../nrm-core
+           mkdir ../nrm-core; tar xvf nrm-core-v0.7.0-x86_64-linux.tar.gz -C ../nrm-core
            cd ../nrm-core; pwd; ls
 
         - name: Python install and import check

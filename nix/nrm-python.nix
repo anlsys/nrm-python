@@ -15,8 +15,7 @@ python3Packages.buildPythonPackage {
   ];
   preBuild = ''
     substituteInPlace bin/nrmd \
-      --replace "os.environ[\"NRMSO\"]" \"${nrm-core}/bin/nrm.so\"
+      --replace "os.environ[\"NRMSO\"]" \"${nrm-core}/lib/ghc-8.6.5/libnrm-core.so\"
     substituteInPlace nrm/tooling.py \
-      --replace "os.environ[\"PYNRMSO\"]" \"${nrm-core}/bin/pynrm.so\"
-  '';
+      --replace "os.environ.get(\"PYNRMSO\")" \"${nrm-core}/lib/ghc-8.6.5/libnrm-core-python.so\" '';
 }

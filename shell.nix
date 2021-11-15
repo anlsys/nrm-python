@@ -10,9 +10,11 @@ mkShell {
     hwloc
     linuxPackages.perf
   ];
-  shellHook = ''
-    export NRMSO=${nrm-core}/bin/nrm.so
-    export PYNRMSO=${nrm-core}/bin/pynrm.so
-    export PYTHONPATH=.:$PYTHONPATH
+  shellHook = let pwd = builtins.toPath ./.;
+  in ''
+    export NRMSO=${nrm-core}/lib/ghc-8.6.5/libnrm-core.so
+    export PYNRMSO=${nrm-core}/lib/ghc-8.6.5/libnrm-core-python.so
+    export PYTHONPATH=${pwd}:$PYTHONPATH
+    export PATH=${pwd}/bin:$PATH
   '';
 }

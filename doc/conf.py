@@ -34,7 +34,7 @@ os.environ['NRM_GEN_DOCS'] = "1"
 # -- Project information -----------------------------------------------------
 
 project = u'NRM'
-copyright = u'2019, Argonne National Laboratory'
+copyright = u'2021, Argonne National Laboratory'
 author = u'Argo team, Argonne National Laboratory'
 
 # The short X.Y version

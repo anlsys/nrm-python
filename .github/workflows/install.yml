@@ -12,6 +12,10 @@ jobs:
             run:
                 shell: bash -l {0}
 
+        env:
+            NRMSO: /home/runner/work/nrm-python/nrm-core/nrm-core-v0.7.0-x86_64-linux/lib/libnrm-core.so
+            PYNRMSO: /home/runner/work/nrm-python/nrm-core/nrm-core-v0.7.0-x86_64-linux/lib/libnrm-core-python.so
+
         steps:
         - uses: actions/checkout@v2
         - name: Setup conda
@@ -24,5 +28,25 @@ jobs:
             channel-priority: flexible
             auto-update-conda: true
 
-        - name: Install check
-          run: pip install -e .
+        - name: Install nrm-core dependencies
+          run: |
+           sudo apt-get install pkg-config libzmq3-dev hwloc
+
+        - name: Install nrm-core release
+          run: |
+           wget https://github.com/anlsys/nrm-core/releases/download/v0.7.0/nrm-core-v0.7.0-x86_64-linux.tar.gz
+           mkdir ../nrm-core; tar xvf nrm-core-v0.7.0-x86_64-linux.tar.gz -C ../nrm-core
+           cd ../nrm-core; pwd; ls
+
+        - name: Python install and import check
+          run: |
+            pip install -e .
+            wget https://raw.githubusercontent.com/anlsys/nrm-core/master/tests/pyupstream/spawn.py
+            python spawn.py
+
+        - name: Upload nrm log artifacts
+          if: always()
+          uses: actions/upload-artifact@v2
+          with:
+            name: nrm-logs
+            path: /tmp/nrm.log

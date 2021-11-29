@@ -18,6 +18,7 @@ import shutil
 from contextlib import contextmanager
 import nrm.messaging
 from multiprocessing import Process
+from ctypes.util import find_library
 from typing import NamedTuple, List, NewType
 
 
@@ -44,7 +45,10 @@ class Action(NamedTuple):
 
 
 try:
-    lib = nrm.sharedlib.UnsafeLib(os.environ.get("PYNRMSO"))
+    pyso = find_library("nrm-core-python")
+    if not pyso:
+        pyso = os.environ.get("PYNRMSO")
+    lib = nrm.sharedlib.UnsafeLib(pyso)
 except AttributeError:
     if os.environ.get("NRM_GEN_DOCS"):
         pass

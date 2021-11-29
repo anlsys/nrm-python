@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='nrm',
-    version='0.0.1',
+    version='0.7.0',
     description="Argo Node Resource Manager",
     author='Swann Perarnau',
     author_email='swann@anl.gov',

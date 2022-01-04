@@ -37,6 +37,9 @@ class Progress(object):
                     "processID": os.getpid(),
                     "rankID": -1,
                     "threadID": 0,
+                    "cpusID" : self.cpus_vec,
+                    "gpusID" : self.gpus_vec,
+                    "nodesID" : self.nodes_vec,
                 }
             },
         )
@@ -57,6 +60,9 @@ class Progress(object):
                         "processID": os.getpid(),
                         "rankID": -1,
                         "threadID": 0,
+                        "cpusID" : self.cpus_vec,
+                        "gpusID" : self.gpus_vec,
+                        "nodesID" : self.nodes_vec,
                     },
                 },
             )

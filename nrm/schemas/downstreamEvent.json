@@ -61,6 +61,7 @@
                         "threadProgress": {
                             "required": [
                                 "downstreamThreadID",
+                                "scopes",
                                 "progress"
                             ],
                             "type": "object",
@@ -104,13 +105,22 @@
                                     "type": "object",
                                     "properties": {
                                         "cpu": {
-                                            "type": "number"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         },
                                         "node": {
-                                            "type": "number"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         },
                                         "gpu": {
-                                            "type": "number"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         }
                                     }
                                 }
@@ -126,7 +136,8 @@
                     "properties": {
                         "threadPause": {
                             "required": [
-                                "downstreamThreadID"
+                                "downstreamThreadID",
+                                "scopes"
                             ],
                             "type": "object",
                             "properties": {
@@ -166,13 +177,22 @@
                                     "type": "object",
                                     "properties": {
                                         "cpu": {
-                                            "type": "number"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         },
                                         "node": {
-                                            "type": "number"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         },
                                         "gpu": {
-                                            "type": "number"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         }
                                     }
                                 }
@@ -189,6 +209,7 @@
                         "threadPhaseContext": {
                             "required": [
                                 "downstreamThreadID",
+                                "scopes",
                                 "phaseContext"
                             ],
                             "type": "object",
@@ -229,13 +250,22 @@
                                     "type": "object",
                                     "properties": {
                                         "cpu": {
-                                            "type": "number"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         },
                                         "node": {
-                                            "type": "number"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         },
                                         "gpu": {
-                                            "type": "number"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         }
                                     }
                                 },
@@ -274,7 +304,8 @@
                     "properties": {
                         "threadPhasePause": {
                             "required": [
-                                "downstreamThreadID"
+                                "downstreamThreadID",
+                                "scopes"
                             ],
                             "type": "object",
                             "properties": {
@@ -314,13 +345,22 @@
                                     "type": "object",
                                     "properties": {
                                         "cpu": {
-                                            "type": "number"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         },
                                         "node": {
-                                            "type": "number"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         },
                                         "gpu": {
-                                            "type": "number"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         }
                                     }
                                 }

@@ -94,6 +94,25 @@
                                             "type": "number"
                                         }
                                     }
+                                },
+                                "scopes": {
+                                    "required": [
+                                        "cpu",
+                                        "node",
+                                        "gpu"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "number"
+                                        },
+                                        "node": {
+                                            "type": "number"
+                                        },
+                                        "gpu": {
+                                            "type": "number"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -134,6 +153,25 @@
                                             "type": "number"
                                         },
                                         "threadID": {
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                "scopes": {
+                                    "required": [
+                                        "cpu",
+                                        "node",
+                                        "gpu"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "number"
+                                        },
+                                        "node": {
+                                            "type": "number"
+                                        },
+                                        "gpu": {
                                             "type": "number"
                                         }
                                     }
@@ -178,6 +216,25 @@
                                             "type": "number"
                                         },
                                         "threadID": {
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                "scopes": {
+                                    "required": [
+                                        "cpu",
+                                        "node",
+                                        "gpu"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "number"
+                                        },
+                                        "node": {
+                                            "type": "number"
+                                        },
+                                        "gpu": {
                                             "type": "number"
                                         }
                                     }
@@ -244,6 +301,25 @@
                                             "type": "number"
                                         },
                                         "threadID": {
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                "scopes": {
+                                    "required": [
+                                        "cpu",
+                                        "node",
+                                        "gpu"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "number"
+                                        },
+                                        "node": {
+                                            "type": "number"
+                                        },
+                                        "gpu": {
                                             "type": "number"
                                         }
                                     }

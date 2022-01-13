@@ -61,6 +61,7 @@
                         "threadProgress": {
                             "required": [
                                 "downstreamThreadID",
+                                "scopes",
                                 "progress"
                             ],
                             "type": "object",
@@ -92,6 +93,34 @@
                                         },
                                         "threadID": {
                                             "type": "number"
+                                        }
+                                    }
+                                },
+                                "scopes": {
+                                    "required": [
+                                        "cpu",
+                                        "node",
+                                        "gpu"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "node": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "gpu": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         }
                                     }
                                 }
@@ -151,6 +180,7 @@
                         "threadPhaseContext": {
                             "required": [
                                 "downstreamThreadID",
+                                "scopes",
                                 "phaseContext"
                             ],
                             "type": "object",
@@ -179,6 +209,34 @@
                                         },
                                         "threadID": {
                                             "type": "number"
+                                        }
+                                    }
+                                },
+                                "scopes": {
+                                    "required": [
+                                        "cpu",
+                                        "node",
+                                        "gpu"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "node": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "gpu": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         }
                                     }
                                 },
@@ -217,7 +275,8 @@
                     "properties": {
                         "threadPhasePause": {
                             "required": [
-                                "downstreamThreadID"
+                                "downstreamThreadID",
+                                "scopes"
                             ],
                             "type": "object",
                             "properties": {
@@ -245,6 +304,34 @@
                                         },
                                         "threadID": {
                                             "type": "number"
+                                        }
+                                    }
+                                },
+                                "scopes": {
+                                    "required": [
+                                        "cpu",
+                                        "node",
+                                        "gpu"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "node": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "gpu": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
                                         }
                                     }
                                 }

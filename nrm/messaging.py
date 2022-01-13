@@ -252,11 +252,33 @@ class UpstreamPubClient(object):
         self.stream.on_recv(self.do_recv_callback)
 
 
-@recv_callback()
 class DownstreamEventServer(RPCServer):
-    pass
-
     """Implements the message layer server for the downstream event API."""
+
+    def recv(self):
+        wire = self.socket.recv()
+        _logger.info("received message: %r", wire)
+        return wire
+
+    def do_recv_callback(self, frames):
+        _logger.info("receiving message: %r", frames)
+        assert len(frames) == 2
+        msg = frames[1]
+        try:
+            identity = frames[0].decode()
+        except UnicodeDecodeError:
+            identity = "unassigned"
+        assert self.callback
+        msg = json.loads(msg)
+        if "info" in msg and "threadProgress" in msg["info"]:
+            del msg["info"]["threadProgress"]["scopes"]
+        msg = json.dumps(msg)
+        self.callback(msg, identity)
+
+    def setup_recv_callback(self, callback):
+        self.stream = zmqstream.ZMQStream(self.socket)
+        self.callback = callback
+        self.stream.on_recv(self.do_recv_callback)
 
 
 def downHeader(*args, **kwargs):

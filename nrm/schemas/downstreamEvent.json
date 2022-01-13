@@ -136,8 +136,7 @@
                     "properties": {
                         "threadPause": {
                             "required": [
-                                "downstreamThreadID",
-                                "scopes"
+                                "downstreamThreadID"
                             ],
                             "type": "object",
                             "properties": {
@@ -165,34 +164,6 @@
                                         },
                                         "threadID": {
                                             "type": "number"
-                                        }
-                                    }
-                                },
-                                "scopes": {
-                                    "required": [
-                                        "cpu",
-                                        "node",
-                                        "gpu"
-                                    ],
-                                    "type": "object",
-                                    "properties": {
-                                        "cpu": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "number"
-                                            }
-                                        },
-                                        "node": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "number"
-                                            }
-                                        },
-                                        "gpu": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "number"
-                                            }
                                         }
                                     }
                                 }

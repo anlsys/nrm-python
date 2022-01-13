@@ -253,8 +253,6 @@ class UpstreamPubClient(object):
 
 
 class DownstreamEventServer(RPCServer):
-    pass
-
     """Implements the message layer server for the downstream event API."""
 
     def recv(self):
@@ -281,6 +279,7 @@ class DownstreamEventServer(RPCServer):
         self.stream = zmqstream.ZMQStream(self.socket)
         self.callback = callback
         self.stream.on_recv(self.do_recv_callback)
+
 
 def downHeader(*args, **kwargs):
     assert len(kwargs) == 2

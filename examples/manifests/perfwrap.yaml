@@ -4,4 +4,4 @@ app:
     perfFreq:
       hertz: 1
     perfLimit: 100000
-    perfEvent: "instructions"
+    perfEvent: "PAPI_TOT_INS"

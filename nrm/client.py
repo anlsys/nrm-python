@@ -1,4 +1,7 @@
-from ctypes.util import find_library
-from ctypes import CDLL
+from _nrm_cffi import ffi,lib
 
-libnrm = CDLL(find_library("nrm"))
+client = ffi.new("nrm_client_t **")
+uri = ffi.new("char[]", b"tcp://127.0.0.1")
+err = lib.nrm_client_create(client, uri, 2345, 3456)
+
+print(err)

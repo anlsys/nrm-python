@@ -1,99 +1,72 @@
 from _nrm_cffi import ffi,lib
-from dataclasses import dataclass
 from typing import Union, List, Callable
 
-
-@dataclass
-class NRMClient:
+class Client:
     """Client class for interacting with NRM C interface. Prototyped interface for client below.
-
     Tentative usage:
-
     ```
-    with NRMClient() as nrmc:
-
+    from nrm import Client, "Actuator"
+    with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
         ...
-        nrmc.add_actuator(my_actuator)
+        nrmc["my_actuator"] = actuator
         ...
         nrmc.send_event(get_time(), sensor, scope, 1234)
         ...
 
     ```
-
     """
 
-    uri:str = "tcp://127.0.0.1"
-    pub_port:int=2345
-    rpc_port:int=3456
-    actuators: List[NRMActuator] = []
-    scopes: List[NRMScope] = []
-    sensors: List[NRMSensor] = []
-    slices: List[NRMSlice] = []
+    def __init__(self):
+        self._nrm_objects = {}
 
-    def __enter__(self):
-        self._c_client = ffi.new("nrm_client_t **")
-        self._c_uri = ffi.new("char[]", bytes(self.uri))
+    def __enter__(self, uri:str= "tcp://127.0.0.1", pub_port:int=2345, rpc_port:int=3456):
+        self._c_client_p = ffi.new("nrm_client_t **")
+        self._c_uri = ffi.new("char[]", bytes(uri, "utf-8"))
+        self.pub_port = pub_port
+        self.rpc_port = rpc_port
         lib.nrm_client_create(self._c_client, self._c_uri, self.pub_port, self.rpc_port)
+        self._c_client = self._c_client_p[0]
+        # Based on following from cffi docs:
+        # p_handle = ffi.new("opaque_t **")
+        # lib.init_stuff(p_handle)   # pass the pointer to the 'handle' pointer
+        # handle = p_handle[0]       # now we can read 'handle' out of 'p_handle'
+        # lib.more_stuff(handle)
 
     def __exit__(self):
-        pass
-        # lib.nrm_client_destroy
+        lib.nrm_client_destroy(self._c_client_p)
 
-    def actuate(self, actuator:NRMActuator, float:value) -> int:
-        pass
-        # lib.nrm_client_actuate
+    def __setitem__(self, uuid_key:str, nrm_object:Union["Scope", "Sensor", "Slice", "Actuator"]):
+        self._nrm_objects[key] = nrm_object
+        if isinstance(nrm_object, "Scope"):
+            return lib.nrm_client_add_scope(self._c_client, nrm_object._c_scope)
+        elif isinstance(nrm_object, "Sensor"):
+            return lib.nrm_client_add_sensor(self._c_client, nrm_object._c_sensor)
+        elif isinstance(nrm_object, "Slice"):
+            return lib.nrm_client_add_slice(self._c_client, nrm_object._c_slice)
+        elif isinstance(nrm_object, "Actuator"):
+            return lib.nrm_client_add_actuator(self._c_client, nrm_object._c_actuator)
 
-    def add_actuator(self, actuator:NRMActuator) -> int:
-        pass
-        # lib.nrm_client_add_actuator
-
-    def add_scope(self, scope:NRMScope) -> int:
-        pass
-        # lib.nrm_client_add_scope
-
-    def add_sensor(self, sensor:NRMSensor) -> int:
-        pass
-        # lib.nrm_client_add_sensor
-
-    def add_slice(self, slice:NRMSlice) -> int:
-        pass
-        # lib.nrm_client_add_slice
-
-    def find(self, obj:Union[NRMScope, NRMSensor, NRMSlice], uuid:str) -> Union[NRMScope, NRMSensor, NRMSlice]:
-        pass
+    def __getitem__(self, key):
         # lib.nrm_client_find
+        return self._nrm_objects[key]
 
-    def get_actuators(self) -> List[NRMActuator]:
+    def __delitem__(self, key):
         pass
-        # lib.nrm_client_list_actuators
 
-    def get_scopes(self) -> List[NRMScope]:
-        pass
-        # lib.nrm_client_list_scopes
+    def actuate(self, actuator:"Actuator", value:float) -> int:
+        return lib.nrm_client_actuate(self._c_client, actuator._c_actuator, value)
 
-    def get_sensors(self) -> List[NRMSensor]:
-        pass
-        # lib.nrm_client_list_sensors
-
-    def get_slices(self) -> List[NRMSlice]:
-        pass
-        # lib.nrm_client_list_slices
-
-    def remove_slice(self, type:int, uuid:str) -> int:
-        pass
-        # lib.nrm_client_remove
-
-    def send_event(self, time:int, sensor:NRMSensor, scope:NRMScope, value:float) -> int:
-        pass
-        # lib.nrm_client_send_event
+    def send_event(self, time:int, sensor:"Sensor", scope:"Scope", value:float) -> int:
+        return lib.nrm_client_send_event(self._c_client, time, sensor._c_sensor, scope._c_scope, value)
 
     def set_event_listener(self, event_listener:Callable) -> int:
         pass
         # lib.nrm_client_set_event_listener
 
     def start_event_listener(self, topic:str) -> int:
-        pass
-        # lib.nrm_client_start_event_listener
+        topic = ffi.new("char []", bytes(topic, "utf-8"))
+        topic_as_nrm_string_t = ffi.new("nrm_string_t *", topic)
+        return lib.nrm_client_start_event_listener(self._c_client, topic_as_nrm_string_t)
 
     def set_actuate_listener(self, actuate_listener:Callable) -> int:
         pass
@@ -101,4 +74,9 @@ class NRMClient:
 
     def start_actuate_listener(self) -> int:
         pass
-        # lib.nrm_client_start_actuate_listener
+        return lib.nrm_client_start_actuate_listener(self._c_client)
+
+
+if __name__ == "__main__":
+    with Client() as nrmc:
+        pass

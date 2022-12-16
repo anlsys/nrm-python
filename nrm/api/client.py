@@ -5,7 +5,7 @@ class Client:
     """Client class for interacting with NRM C interface. Prototyped interface for client below.
     Tentative usage:
     ```
-    from nrm import Client, "Actuator"
+    from nrm import Client, Actuator
     with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
         ...
         nrmc["my_actuator"] = actuator

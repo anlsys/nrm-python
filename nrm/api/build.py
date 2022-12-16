@@ -1,7 +1,7 @@
 from cffi import FFI
 ffi = FFI()
 
-ffi.set_source("_nrm_cffi",
+ffi.set_source("./build/_nrm_cffi",
 """
     #include "nrm.h"
 """,

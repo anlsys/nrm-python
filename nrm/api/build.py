@@ -1,7 +1,7 @@
 from cffi import FFI
 ffi = FFI()
 
-ffi.set_source("./build/_nrm_cffi",
+ffi.set_source("build._nrm_cffi",
 """
     #include "nrm.h"
 """,
@@ -66,6 +66,18 @@ int nrm_client_set_actuate_listener(nrm_client_t *client,
 int nrm_client_start_actuate_listener(const nrm_client_t *client);
 
 void nrm_client_destroy(nrm_client_t **client);
+
+nrm_sensor_t *nrm_sensor_create(const char *name);
+
+void nrm_sensor_destroy(nrm_sensor_t **);
+
+nrm_slice_t *nrm_slice_create(const char *name);
+
+void nrm_slice_destroy(nrm_slice_t **);
+
+nrm_actuator_t *nrm_actuator_create(const char *name);
+
+void nrm_actuator_destroy(nrm_actuator_t **);
 
 """)
 

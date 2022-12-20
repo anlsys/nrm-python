@@ -8,7 +8,10 @@ class Client:
     from nrm import Client, Actuator
     with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
         ...
-        nrmc["my_actuator"] = actuator
+        nrmc["my_actuator"] = actuator not this
+
+        nrmc.scopes["uuid"] = my_scope  # do thisZ!!!
+
         ...
         nrmc.send_event(get_time(), sensor, scope, 1234)
         ...
@@ -65,7 +68,7 @@ class Client:
 
     def start_event_listener(self, topic:str) -> int:
         topic = ffi.new("char []", bytes(topic, "utf-8"))
-        topic_as_nrm_string_t = ffi.new("nrm_string_t *", topic)
+        topic_as_nrm_string_t = ffi.new("nrm_string_t *", topic) # need nrm string create
         return lib.nrm_client_start_event_listener(self._c_client, topic_as_nrm_string_t)
 
     def set_actuate_listener(self, actuate_listener:Callable) -> int:

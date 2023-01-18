@@ -16,32 +16,15 @@ class Sensor:
     ```
     """
 
-    def __init__(self):
-        self._nrm_objects = {}
-
     def __enter__(self, name:str= "nrm-sensor", uuid:str="default-uuid"):
         self._c_sensor_name = ffi.new("char[]", bytes(name, "utf-8"))
-        sensor_ptr = lib.nrm_sensor_create(self._c_sensor_name)  # intantiate a pointer?
+        self._sensor_ptr = lib.nrm_sensor_create(self._c_sensor_name)  # intantiate a pointer?
 
     def __exit__(self):
-        lib.nrm_sensor_destroy(self._c_sensor_p)
-
-    def __setitem__(self, uuid_key:str, nrm_object:Union["Scope", "Sensor", "Slice", "Actuator"]):
-        self._nrm_objects[key] = nrm_object
-        if isinstance(nrm_object, "Scope"):
-            return lib.nrm_client_add_scope(self._c_client, nrm_object._c_scope)
-        elif isinstance(nrm_object, "Sensor"):
-            return lib.nrm_client_add_sensor(self._c_client, nrm_object._c_sensor)
-        elif isinstance(nrm_object, "Slice"):
-            return lib.nrm_client_add_slice(self._c_client, nrm_object._c_slice)
-        elif isinstance(nrm_object, "Actuator"):
-            return lib.nrm_client_add_actuator(self._c_client, nrm_object._c_actuator)
-
-    def __getitem__(self, key):
-        # lib.nrm_client_find
-        return self._nrm_objects[key]
+        lib.nrm_sensor_destroy(self._sensor_ptr)
 
     def __delitem__(self, key):
+        lib.nrm_sensor_destroy(self._sensor_ptr)
         pass
 
 

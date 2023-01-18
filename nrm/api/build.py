@@ -18,6 +18,8 @@ typedef char *nrm_string_t;
 typedef struct timespec nrm_time_t;
 typedef nrm_string_t nrm_uuid_t;
 
+nrm_string_t nrm_string_fromchar(const char *buf);
+
 typedef int(nrm_client_event_listener_fn)(nrm_string_t sensor_uuid,
                                           nrm_time_t time,
                                           nrm_scope_t *scope,
@@ -56,7 +58,7 @@ int nrm_client_send_event(const nrm_client_t *client,
                           double value);
 
 int nrm_client_set_event_listener(nrm_client_t *client,
-                                  nrm_client_event_listener_fn fn);
+                                   nrm_client_event_listener_fn fn);
 
 int nrm_client_start_event_listener(const nrm_client_t *client,
                                     nrm_string_t topic);

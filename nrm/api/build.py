@@ -58,28 +58,28 @@ int nrm_client_send_event(const nrm_client_t *client,
                           double value);
 
 int nrm_client_set_event_listener(nrm_client_t *client,
-                                   nrm_client_event_listener_fn fn);
+                                  nrm_client_event_listener_fn fn);
+
+int nrm_client_set_event_Pylistener(nrm_client_t *client,
+                                    PyObject *fn);
 
 int nrm_client_start_event_listener(const nrm_client_t *client,
                                     nrm_string_t topic);
 
+int nrm_client_start_event_Pylistener(nrm_client_t *client,
+                                      nrm_string_t topic);
+
 int nrm_client_set_actuate_listener(nrm_client_t *client,
                                     nrm_client_actuate_listener_fn fn);
+
+int nrm_client_set_actuate_Pylistener(nrm_client_t *client,
+                                      PyObject *fn);
+
 int nrm_client_start_actuate_listener(const nrm_client_t *client);
 
+int nrm_client_start_actuate_Pylistener(const nrm_client_t *client);
+
 void nrm_client_destroy(nrm_client_t **client);
-
-nrm_sensor_t *nrm_sensor_create(const char *name);
-
-void nrm_sensor_destroy(nrm_sensor_t **);
-
-nrm_slice_t *nrm_slice_create(const char *name);
-
-void nrm_slice_destroy(nrm_slice_t **);
-
-nrm_actuator_t *nrm_actuator_create(const char *name);
-
-void nrm_actuator_destroy(nrm_actuator_t **);
 
 """)
 

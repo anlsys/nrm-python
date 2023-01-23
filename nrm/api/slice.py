@@ -5,14 +5,15 @@ class Slice:
     """Slice class for interacting with NRM C interface. Prototyped interface for client below.
     Tentative usage:
     ```
-    from nrm import Slice, Actuator
-    with Slice() as nrms:
+    from nrm import Client, Actuator
+    with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
         ...
-        nrmc["my_actuator"] = actuator
-        ...
-        nrmc.send_event(get_time(), slice, scope, 1234)
-        ...
+        my_slice = Slice("nrm-slice", "abc123)
+        nrmc.slices["uuid"] = my_slice
 
+        ...
+        nrmc.send_event(get_time(), sensor, scope, 1234)
+        ...
     ```
     """
 

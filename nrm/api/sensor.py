@@ -6,9 +6,9 @@ class Sensor:
     Tentative usage:
     ```
     from nrm import Sensor, Actuator
-    with Sensor() as nrms:
+    with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
         ...
-        nrmc["my_actuator"] = actuator
+        nrmc.sensors["abc123"] = my_sensor
         ...
         nrmc.send_event(get_time(), sensor, scope, 1234)
         ...

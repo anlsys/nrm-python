@@ -58,9 +58,9 @@ def test_event_callbacks():
         print(uuid, time, scope, value)
 
     with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
-        nrmc.set_event_listener(print_event_info)
+        flag = nrmc.set_event_listener(print_event_info)
         # check if pyfn has made it into client struct?
-        nrmc.start_event_listener("test-report-numa-pwr")
+        flag = nrmc.start_event_listener("test-report-numa-pwr")
         # check logs?
 
 
@@ -71,9 +71,9 @@ def test_actuate_callbacks():
         print(uuid, value)
 
     with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
-        nrmc.set_actuate_listener(print_actuate_info)
+        flag = nrmc.set_actuate_listener(print_actuate_info)
         # check if pyfn has made it into client struct?
-        nrmc.start_actuate_listener()
+        flag = nrmc.start_actuate_listener()
         # check logs?
 
 

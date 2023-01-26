@@ -20,6 +20,16 @@ typedef nrm_string_t nrm_uuid_t;
 
 nrm_string_t nrm_string_fromchar(const char *buf);
 
+void nrm_time_gettime(nrm_time_t *now);
+
+nrm_actuator_t *nrm_actuator_create(const char *name);
+
+nrm_scope_t *nrm_scope_create(const char *name);
+
+nrm_sensor_t *nrm_sensor_create(const char *name);
+
+nrm_slice_t *nrm_slice_create(const char *name);
+
 typedef int(nrm_client_event_listener_fn)(nrm_string_t sensor_uuid,
                                           nrm_time_t time,
                                           nrm_scope_t *scope,

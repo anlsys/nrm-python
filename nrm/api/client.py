@@ -81,7 +81,10 @@ class Client:
 
     def send_event(self, time:int, sensor:"Sensor", scope:"Scope", value:float) -> int:
         # need nrm_time_t time
-        return lib.nrm_client_send_event(self._c_client, time, sensor._c_sensor, scope._c_scope, value)
+        timespec_p = ffi.new("nrm_time_t **")
+        lib.nrm_time_gettime(timespec_p)
+        timespec = timespec_p[0]
+        return lib.nrm_client_send_event(self._c_client, timespec, sensor._c_sensor, scope._c_scope, value)
 
     def set_event_listener(self, event_listener:Callable) -> int:
         pass

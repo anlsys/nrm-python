@@ -80,25 +80,28 @@ class Client:
         return lib.nrm_client_actuate(self._c_client, actuator._c_actuator, value)
 
     def send_event(self, time:int, sensor:"Sensor", scope:"Scope", value:float) -> int:
+        # need nrm_time_t time
         return lib.nrm_client_send_event(self._c_client, time, sensor._c_sensor, scope._c_scope, value)
 
     def set_event_listener(self, event_listener:Callable) -> int:
         pass
+        # assert event_listener accepts 4 arguments?
+        #  with call with: uuid, time, scope, msg->event->value
         # lib.nrm_client_set_event_Pylistener
 
-    def start_event_listener(self, topic:str, *args, **kwargs) -> int:
+    def start_event_listener(self, topic:str) -> int:
         topic = ffi.new("char []", bytes(topic, "utf-8"))
         topic_as_nrm_string_t = ffi.new("nrm_string_t *", topic)
-        # return lib.nrm_client_start_event_listener(self._c_client, topic_as_nrm_string_t)
         # lib.nrm_client_start_event_Pylistener
 
     def set_actuate_listener(self, actuate_listener:Callable) -> int:
         pass
+        # assert actuate_listener accepts 2 arguments?
+        #  will call with: uuid, msg->event->value
         # lib.nrm_client_set_actuate_Pylistener
 
-    def start_actuate_listener(self, *args, **kwargs) -> int:
+    def start_actuate_listener(self) -> int:
         pass
-        # return lib.nrm_client_start_actuate_listener(self._c_client)
         # lib.nrm_client_start_event_Pylistener
 
 if __name__ == "__main__":

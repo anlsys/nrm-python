@@ -1,56 +1,84 @@
 import secrets
 import pytest
+import time
 from nrm.api import Client, Actuator, Scope, Sensor, Slice
 
+act_uuid = secrets.token_hex(3)
+sco_uuid = secrets.token_hex(3)
+sen_uuid = secrets.token_hex(3)
+sli_uuid = secrets.token_hex(3)
 
-def test_client_objs_init():
+
+def test_client_init():
     with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
-        act_uuid = secrets.token_hex(3)
-        sco_uuid = secrets.token_hex(3)
-        sen_uuid = secrets.token_hex(3)
-        sli_uuid = secrets.token_hex(3)
+        # evaluate nrmc
+        pass
 
-        act = Actuator("nrm-test-actuator", act_uuid)
-        sco = Scope("nrm-test-scope", sco_uuid)
-        sen = Sensor("nrm-test-sensor", sen_uuid)
-        sli = Slice("nrm-test-slice", sli_uuid)
-
-def test_client_delete():
-    pass
 
 def test_set_objs_to_client():
+
+    act = Actuator("nrm-test-actuator", act_uuid)
+    sco = Scope("nrm-test-scope", sco_uuid)
+    sen = Sensor("nrm-test-sensor", sen_uuid)
+    sli = Slice("nrm-test-slice", sli_uuid)
+    # assert names, pointers, objects are instantiated underneath for each
+
     with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
-        act_uuid = secrets.token_hex(3)
-        sco_uuid = secrets.token_hex(3)
-        sen_uuid = secrets.token_hex(3)
-        sli_uuid = secrets.token_hex(3)
-
-        act = Actuator("nrm-test-actuator", act_uuid)
-        sco = Scope("nrm-test-scope", sco_uuid)
-        sen = Sensor("nrm-test-sensor", sen_uuid)
-        sli = Slice("nrm-test-slice", sli_uuid)
-
         nrmc.actuators[act_uuid] = act
         nrmc.scopes[sco_uuid] = sco
         nrmc.sensors[sen_uuid] = sen
         nrmc.slices[sli_uuid] = sli
+        # assert both py and C client contains new objects
+
 
 def test_actuate():
-    pass
+    act = Actuator("nrm-test-actuator", act_uuid)
+    with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
+        nrmc.actuators[act_uuid] = act
+        flag = nrmc.actuate(act, 1234)
+        # assert flag == 0, read log?
+
 
 def test_send_event():
-    pass
+    sco = Scope("nrm-test-scope", sco_uuid)
+    sen = Sensor("nrm-test-sensor", sen_uuid)
+    with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
+        nrmc.scopes[sco_uuid] = sco
+        nrmc.sensors[sen_uuid] = sen
+        now = int(time.time())
+        flag = nrmc.send_event(now, sen, sco, 1234)
+        # assert flag == 0, read log?
+
 
 def test_event_callbacks():
-    pass
+
+    def print_event_info(*args):
+        print("Responding to subscribed event")
+        uuid, time, scope, value = args
+        print(uuid, time, scope, value)
+
+    with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
+        nrmc.set_event_listener(print_event_info)
+        # check if pyfn has made it into client struct?
+        nrmc.start_event_listener("test-report-numa-pwr")
+        # check logs?
+
 
 def test_actuate_callbacks():
-    pass
+    def print_actuate_info(*args):
+        print("Responding to actuation request")
+        uuid, value = args
+        print(uuid, value)
+
+    with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
+        nrmc.set_actuate_listener(print_actuate_info)
+        # check if pyfn has made it into client struct?
+        nrmc.start_actuate_listener()
+        # check logs?
 
 
 if __name__ == "__main__":
-    test_client_objs_init()
-    test_client_delete()
+    test_client_init()
     test_set_objs_to_client()
     test_actuate()
     test_send_event()

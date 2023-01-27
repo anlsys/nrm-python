@@ -10,7 +10,6 @@ sli_uuid = secrets.token_hex(3)
 
 def test_client_init():
     with Client() as nrmc:
-        # evaluate nrmc
         pass
 
 
@@ -50,7 +49,6 @@ def test_send_event():
 
 
 def test_event_callbacks():
-
     def print_event_info(*args):
         print("Responding to subscribed event")
         uuid, time, scope, value = args

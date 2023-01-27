@@ -1,5 +1,6 @@
-from _build._nrm_cffi import ffi,lib
+from nrm.api._build._nrm_cffi import ffi, lib
 from typing import Union, List, Callable
+
 
 class Sensor:
     """Sensor class for interacting with NRM C interface. Prototyped interface for client below.
@@ -16,18 +17,11 @@ class Sensor:
     ```
     """
 
-    def __enter__(self, name:str= "nrm-sensor", uuid:str="default-uuid"):
+    def __init__(self, name: str = "nrm-sensor", uuid: str = "default-uuid"):
         self._c_sensor_name = ffi.new("char[]", bytes(name, "utf-8"))
-        self._sensor_ptr = lib.nrm_sensor_create(self._c_sensor_name)  # intantiate a pointer?
+        self._sensor_ptr = lib.nrm_sensor_create(
+            self._c_sensor_name
+        )  # intantiate a pointer?
 
-    def __exit__(self):
+    def __delitem__(self):
         lib.nrm_sensor_destroy(self._sensor_ptr)
-
-    def __delitem__(self, key):
-        lib.nrm_sensor_destroy(self._sensor_ptr)
-        pass
-
-
-if __name__ == "__main__":
-    with Sensor() as nrmc:
-        pass

@@ -1,13 +1,17 @@
 from cffi import FFI
+
 ffi = FFI()
 
-ffi.set_source("build._nrm_cffi",
-"""
+ffi.set_source(
+    "_build._nrm_cffi",
+    """
     #include "nrm.h"
 """,
-    libraries=["nrm"])
+    libraries=["nrm"],
+)
 
-ffi.cdef("""
+ffi.cdef(
+    """
 typedef struct nrm_client_s nrm_client_t;
 typedef struct nrm_actuator_s nrm_actuator_t;
 typedef struct nrm_slice_s nrm_slice_t;
@@ -45,6 +49,8 @@ int nrm_client_start_event_Pylistener(const nrm_client_t *client,
 int nrm_client_start_actuate_Pylistener(const nrm_client_t *client);
 
 // END PY STUFF
+
+int nrm_init(int *argc, char **argv[]);
 
 nrm_string_t nrm_string_fromchar(const char *buf);
 
@@ -102,9 +108,8 @@ int nrm_client_start_actuate_listener(const nrm_client_t *client);
 
 void nrm_client_destroy(nrm_client_t **client);
 
-""")
+"""
+)
 
 if __name__ == "__main__":
     ffi.compile(verbose=True)
-    
-

@@ -1,5 +1,4 @@
 import secrets
-import pytest
 import time
 from nrm.api import Client, Actuator, Scope, Sensor, Slice
 
@@ -10,7 +9,7 @@ sli_uuid = secrets.token_hex(3)
 
 
 def test_client_init():
-    with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
+    with Client() as nrmc:
         # evaluate nrmc
         pass
 
@@ -23,7 +22,7 @@ def test_set_objs_to_client():
     sli = Slice("nrm-test-slice", sli_uuid)
     # assert names, pointers, objects are instantiated underneath for each
 
-    with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
+    with Client() as nrmc:
         nrmc.actuators[act_uuid] = act
         nrmc.scopes[sco_uuid] = sco
         nrmc.sensors[sen_uuid] = sen
@@ -33,7 +32,7 @@ def test_set_objs_to_client():
 
 def test_actuate():
     act = Actuator("nrm-test-actuator", act_uuid)
-    with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
+    with Client() as nrmc:
         nrmc.actuators[act_uuid] = act
         flag = nrmc.actuate(act, 1234)
         # assert flag == 0, read log?
@@ -42,7 +41,7 @@ def test_actuate():
 def test_send_event():
     sco = Scope("nrm-test-scope", sco_uuid)
     sen = Sensor("nrm-test-sensor", sen_uuid)
-    with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
+    with Client() as nrmc:
         nrmc.scopes[sco_uuid] = sco
         nrmc.sensors[sen_uuid] = sen
         now = int(time.time())
@@ -57,7 +56,7 @@ def test_event_callbacks():
         uuid, time, scope, value = args
         print(uuid, time, scope, value)
 
-    with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
+    with Client() as nrmc:
         flag = nrmc.set_event_listener(print_event_info)
         # check if pyfn has made it into client struct?
         flag = nrmc.start_event_listener("test-report-numa-pwr")
@@ -70,7 +69,7 @@ def test_actuate_callbacks():
         uuid, value = args
         print(uuid, value)
 
-    with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
+    with Client() as nrmc:
         flag = nrmc.set_actuate_listener(print_actuate_info)
         # check if pyfn has made it into client struct?
         flag = nrmc.start_actuate_listener()

@@ -1,4 +1,4 @@
-from build._nrm_cffi import ffi,lib
+from _build._nrm_cffi import ffi,lib
 from typing import Union, List, Callable
 
 class Slice:

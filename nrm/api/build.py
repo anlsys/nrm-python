@@ -18,6 +18,34 @@ typedef char *nrm_string_t;
 typedef struct timespec nrm_time_t;
 typedef nrm_string_t nrm_uuid_t;
 
+typedef int(nrm_client_event_listener_fn)(nrm_string_t sensor_uuid,
+                                          nrm_time_t time,
+                                          nrm_scope_t *scope,
+                                          double value);
+typedef int(nrm_client_actuate_listener_fn)(nrm_uuid_t *uuid, double value);
+
+// PY STUFF
+
+extern "Python" int _event_listener(nrm_string_t sensor_uuid,
+                                   nrm_time_t time,
+                                   nrm_scope_t *scope,
+                                   double value);
+
+extern "Python" int _actuate_listener(nrm_uuid_t *uuid, double value);
+
+int nrm_client_set_event_Pylistener(nrm_client_t *client,
+                                    nrm_client_event_listener_fn *fn);
+
+int nrm_client_set_actuate_Pylistener(nrm_client_t *client,
+                                      nrm_client_actuate_listener_fn *fn);
+
+int nrm_client_start_event_Pylistener(const nrm_client_t *client,
+                                      nrm_string_t topic);
+
+int nrm_client_start_actuate_Pylistener(const nrm_client_t *client);
+
+// END PY STUFF
+
 nrm_string_t nrm_string_fromchar(const char *buf);
 
 void nrm_time_gettime(nrm_time_t *now);
@@ -29,12 +57,6 @@ nrm_scope_t *nrm_scope_create(const char *name);
 nrm_sensor_t *nrm_sensor_create(const char *name);
 
 nrm_slice_t *nrm_slice_create(const char *name);
-
-typedef int(nrm_client_event_listener_fn)(nrm_string_t sensor_uuid,
-                                          nrm_time_t time,
-                                          nrm_scope_t *scope,
-                                          double value);
-typedef int(nrm_client_actuate_listener_fn)(nrm_uuid_t *uuid, double value);
 
 int nrm_client_create(nrm_client_t **client,
                       const char *uri,
@@ -70,24 +92,13 @@ int nrm_client_send_event(const nrm_client_t *client,
 int nrm_client_set_event_listener(nrm_client_t *client,
                                   nrm_client_event_listener_fn fn);
 
-int nrm_client_set_event_Pylistener(nrm_client_t *client,
-                                    PyObject *fn);
-
 int nrm_client_start_event_listener(const nrm_client_t *client,
                                     nrm_string_t topic);
-
-int nrm_client_start_event_Pylistener(nrm_client_t *client,
-                                      nrm_string_t topic);
 
 int nrm_client_set_actuate_listener(nrm_client_t *client,
                                     nrm_client_actuate_listener_fn fn);
 
-int nrm_client_set_actuate_Pylistener(nrm_client_t *client,
-                                      PyObject *fn);
-
 int nrm_client_start_actuate_listener(const nrm_client_t *client);
-
-int nrm_client_start_actuate_Pylistener(const nrm_client_t *client);
 
 void nrm_client_destroy(nrm_client_t **client);
 

@@ -30,12 +30,15 @@ typedef int(nrm_client_actuate_listener_fn)(nrm_uuid_t *uuid, double value);
 
 // PY STUFF
 
-extern "Python" int _event_listener(nrm_string_t sensor_uuid,
-                                   nrm_time_t time,
-                                   nrm_scope_t *scope,
-                                   double value);
+extern "Python" int _event_listener_wrap(nrm_client_event_listener_fn *fn,
+                                         nrm_string_t sensor_uuid,
+                                         nrm_time_t time,
+                                         nrm_scope_t *scope,
+                                         double value);
 
-extern "Python" int _actuate_listener(nrm_uuid_t *uuid, double value);
+extern "Python" int _actuate_listener_wrap(nrm_client_actuate_listener_fn *fn,
+                                           nrm_uuid_t uuid,
+                                           double value);
 
 int nrm_client_set_event_Pylistener(nrm_client_t *client,
                                     nrm_client_event_listener_fn *fn);

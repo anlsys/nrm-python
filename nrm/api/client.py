@@ -1,6 +1,7 @@
 from nrm.api._build._nrm_cffi import ffi, lib
 from typing import Union, List, Callable
 from dataclasses import dataclass, field
+import inspect
 
 
 class _NRM_d(dict):
@@ -92,10 +93,11 @@ class Client:
         )
 
     def set_event_listener(self, event_listener: Callable) -> int:
-        pass
-        # assert event_listener accepts 4 arguments?
-        #  with call with: uuid, time, scope, msg->event->value
-        # lib.nrm_client_set_event_Pylistener
+        assert len(inspect.signature(event_listener).parameters) == 4, \
+            "Provided Python callable doesn't accept expected parameter amount"
+        listener = ffi.new_handle(event_listener)
+        self._event_listener = listener
+        flag = lib.nrm_client_set_event_Pylistener(self._c_client, listener)
 
     def start_event_listener(self, topic: str) -> int:
         topic = ffi.new("char []", bytes(topic, "utf-8"))
@@ -103,16 +105,21 @@ class Client:
         # lib.nrm_client_start_event_Pylistener
 
     def set_actuate_listener(self, actuate_listener: Callable) -> int:
-        pass
-        # assert actuate_listener accepts 2 arguments?
-        #  will call with: uuid, msg->event->value
-        # lib.nrm_client_set_actuate_Pylistener
+        assert len(inspect.signature(event_listener).parameters) == 2, \
+            "Provided Python callable doesn't accept expected parameter amount"
+        listener = ffi.new_handle(actuate_listener)
+        self._actuate_listener = listener
+        flag = lib.nrm_client_set_actuate_Pylistener(self._c_client, listener)
 
     def start_actuate_listener(self) -> int:
         pass
         # lib.nrm_client_start_event_Pylistener
 
 
-if __name__ == "__main__":
-    with Client() as nrmc:
-        pass
+@ffi.def_extern()
+def _event_listener_wrap(fn, sensor_uuid, time, scope, value):
+    return fn(sensor_uuid, time, scope, value)
+
+@ffi.def_extern()
+def _actuate_listener_wrap(fn, uuid, value):
+    return fn(uuid, value)

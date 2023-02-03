@@ -2,6 +2,7 @@ from nrm.api._build._nrm_cffi import ffi, lib
 from typing import Union, List, Callable
 from dataclasses import dataclass, field
 import inspect
+import time
 
 
 class _NRM_d(dict):
@@ -82,9 +83,7 @@ class Client:
     def actuate(self, actuator: "Actuator", value: float) -> int:
         return lib.nrm_client_actuate(self._c_client, actuator._actuator_ptr, value)
 
-    def send_event(
-        self, sensor: "Sensor", scope: "Scope", value: float
-    ) -> int:
+    def send_event(self, sensor: "Sensor", scope: "Scope", value: float) -> int:
         timespec_p = ffi.new("nrm_time_t **")
         lib.nrm_time_gettime(timespec_p)
         timespec = timespec_p[0]
@@ -95,9 +94,10 @@ class Client:
     def set_event_listener(self, event_listener: Callable) -> int:
         assert len(inspect.signature(event_listener).parameters) == 4, \
             "Provided Python callable doesn't accept expected parameter amount"
-        listener = ffi.new_handle(event_listener)
-        self._event_listener = listener
-        flag = lib.nrm_client_set_event_Pylistener(self._c_client, listener)
+        py_client = ffi.new_handle(self)
+        self.py_client = py_client
+        self._event_listener = event_listener
+        flag = lib.nrm_client_set_event_Pylistener(self._c_client, py_client, lib._event_listener_wrap)
 
     def start_event_listener(self, topic: str) -> int:
         topic = ffi.new("char []", bytes(topic, "utf-8"))
@@ -107,19 +107,29 @@ class Client:
     def set_actuate_listener(self, actuate_listener: Callable) -> int:
         assert len(inspect.signature(event_listener).parameters) == 2, \
             "Provided Python callable doesn't accept expected parameter amount"
-        listener = ffi.new_handle(actuate_listener)
-        self._actuate_listener = listener
-        flag = lib.nrm_client_set_actuate_Pylistener(self._c_client, listener)
+        py_client = ffi.new_handle(self)
+        self.py_client = py_client
+        self._actuate_listener = actuate_listener
+        flag = lib.nrm_client_set_actuate_Pylistener(self._c_client, py_client, lib._actuate_listener_wrap)
 
     def start_actuate_listener(self) -> int:
         pass
         # lib.nrm_client_start_event_Pylistener
 
+    def _event(self, sensor_uuid, time, scope, value):
+        return self._event_listener(sensor_uuid, time, scope, value)
+
+    def _actuate(self, uuid, value):
+        return self._actuate_listener(uuid, value)
+
 
 @ffi.def_extern()
-def _event_listener_wrap(fn, sensor_uuid, time, scope, value):
-    return fn(sensor_uuid, time, scope, value)
+def _event_listener_wrap(py_client, sensor_uuid, scope, value):
+    timespec_p = ffi.new("nrm_time_t **")
+    lib.nrm_time_gettime(timespec_p)
+    timespec = timespec_p[0]
+    return ffi.from_handle(py_client)._event(sensor_uuid, timespec, scope, value)
 
 @ffi.def_extern()
-def _actuate_listener_wrap(fn, uuid, value):
-    return fn(uuid, value)
+def _actuate_listener_wrap(py_client, uuid, value):
+    return ffi.from_handle(py_client)._actuate(uuid, value)

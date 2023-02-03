@@ -6,12 +6,21 @@ ffi.set_source(
     "_build._nrm_cffi",
     """
     #include "nrm.h"
-""",
+    """,
     libraries=["nrm"],
 )
 
 ffi.cdef(
     """
+
+typedef int... time_t;
+
+typedef struct timespec{
+    time_t tv_sec;
+    long tv_nsec;
+    ...;
+};
+
 typedef struct nrm_client_s nrm_client_t;
 typedef struct nrm_actuator_s nrm_actuator_t;
 typedef struct nrm_slice_s nrm_slice_t;
@@ -28,22 +37,25 @@ typedef int(nrm_client_event_listener_fn)(nrm_string_t sensor_uuid,
                                           double value);
 typedef int(nrm_client_actuate_listener_fn)(nrm_uuid_t *uuid, double value);
 
+nrm_time_t nrm_time_fromns(int64_t ns);
+
 // PY STUFF
 
-extern "Python" int _event_listener_wrap(nrm_client_event_listener_fn *fn,
+extern "Python" int _event_listener_wrap(void *pyclient,
                                          nrm_string_t sensor_uuid,
-                                         nrm_time_t time,
                                          nrm_scope_t *scope,
                                          double value);
 
-extern "Python" int _actuate_listener_wrap(nrm_client_actuate_listener_fn *fn,
+extern "Python" int _actuate_listener_wrap(void *pyclient,
                                            nrm_uuid_t uuid,
                                            double value);
 
 int nrm_client_set_event_Pylistener(nrm_client_t *client,
+                                    void *pyclient,
                                     nrm_client_event_listener_fn *fn);
 
 int nrm_client_set_actuate_Pylistener(nrm_client_t *client,
+                                      void *pyclient,
                                       nrm_client_actuate_listener_fn *fn);
 
 int nrm_client_start_event_Pylistener(const nrm_client_t *client,

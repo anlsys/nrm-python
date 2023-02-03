@@ -43,8 +43,7 @@ def test_send_event():
     with Client() as nrmc:
         nrmc.scopes[sco_uuid] = sco
         nrmc.sensors[sen_uuid] = sen
-        now = int(time.time())
-        flag = nrmc.send_event(now, sen, sco, 1234)
+        flag = nrmc.send_event(sen, sco, 1234)
         # assert flag == 0, read log?
 
 

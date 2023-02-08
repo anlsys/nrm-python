@@ -18,7 +18,6 @@ typedef int... time_t;
 typedef struct timespec{
     time_t tv_sec;
     long tv_nsec;
-    ...;
 };
 
 typedef struct nrm_client_s nrm_client_t;
@@ -34,21 +33,25 @@ typedef nrm_string_t nrm_uuid_t;
 typedef int(nrm_client_event_listener_fn)(nrm_string_t sensor_uuid,
                                           nrm_time_t time,
                                           nrm_scope_t *scope,
-                                          double value);
-typedef int(nrm_client_actuate_listener_fn)(nrm_uuid_t *uuid, double value);
+                                          double value,
+                                          void *arg);
+typedef int(nrm_client_actuate_listener_fn)(nrm_uuid_t *uuid,
+                                            double value,
+                                            void *arg);
 
 nrm_time_t nrm_time_fromns(int64_t ns);
 
 // PY STUFF
 
-extern "Python" int _event_listener_wrap(void *pyclient,
-                                         nrm_string_t sensor_uuid,
+extern "Python" int _event_listener_wrap(nrm_string_t sensor_uuid,
+                                         nrm_time_t time,
                                          nrm_scope_t *scope,
-                                         double value);
+                                         double value,
+                                         void *pyclient);
 
-extern "Python" int _actuate_listener_wrap(void *pyclient,
-                                           nrm_uuid_t uuid,
-                                           double value);
+extern "Python" int _actuate_listener_wrap(nrm_uuid_t *uuid,
+                                           double value,
+                                           void *pyclient);
 
 int nrm_client_set_event_Pylistener(nrm_client_t *client,
                                     void *pyclient,

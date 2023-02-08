@@ -84,16 +84,12 @@ class Client:
         return lib.nrm_client_actuate(self._c_client, actuator._actuator_ptr, value)
 
     def send_event(self, sensor: "Sensor", scope: "Scope", value: float) -> int:
-        timespec_p = ffi.new("nrm_time_t **")
-        lib.nrm_time_gettime(timespec_p)
-        timespec = timespec_p[0]
+        timespec = lib.nrm_time_fromns(time.time_ns())
         return lib.nrm_client_send_event(
             self._c_client, timespec, sensor._sensor_ptr, scope._scope_ptr, value
         )
 
     def set_event_listener(self, event_listener: Callable) -> int:
-        assert len(inspect.signature(event_listener).parameters) == 4, \
-            "Provided Python callable doesn't accept expected parameter amount"
         py_client = ffi.new_handle(self)
         self.py_client = py_client
         self._event_listener = event_listener
@@ -105,8 +101,6 @@ class Client:
         # lib.nrm_client_start_event_Pylistener
 
     def set_actuate_listener(self, actuate_listener: Callable) -> int:
-        assert len(inspect.signature(event_listener).parameters) == 2, \
-            "Provided Python callable doesn't accept expected parameter amount"
         py_client = ffi.new_handle(self)
         self.py_client = py_client
         self._actuate_listener = actuate_listener
@@ -117,19 +111,18 @@ class Client:
         # lib.nrm_client_start_event_Pylistener
 
     def _event(self, sensor_uuid, time, scope, value):
+        print("GOT EVENT!")
         return self._event_listener(sensor_uuid, time, scope, value)
 
     def _actuate(self, uuid, value):
+        print("GOT ACTUATE")
         return self._actuate_listener(uuid, value)
 
 
 @ffi.def_extern()
-def _event_listener_wrap(py_client, sensor_uuid, scope, value):
-    timespec_p = ffi.new("nrm_time_t **")
-    lib.nrm_time_gettime(timespec_p)
-    timespec = timespec_p[0]
+def _event_listener_wrap(sensor_uuid, timespec, scope, value, py_client):
     return ffi.from_handle(py_client)._event(sensor_uuid, timespec, scope, value)
 
 @ffi.def_extern()
-def _actuate_listener_wrap(py_client, uuid, value):
+def _actuate_listener_wrap(uuid, value, py_client):
     return ffi.from_handle(py_client)._actuate(uuid, value)

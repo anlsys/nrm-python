@@ -9,16 +9,17 @@ sli_uuid = secrets.token_hex(3)
 
 
 def test_client_init():
+    print("test_client_init")
     with Client() as nrmc:
         pass
 
 
 def test_set_objs_to_client():
-
-    act = Actuator("nrm-test-actuator", act_uuid)
-    sco = Scope("nrm-test-scope", sco_uuid)
-    sen = Sensor("nrm-test-sensor", sen_uuid)
-    sli = Slice("nrm-test-slice", sli_uuid)
+    print("test_set_objs_to_client")
+    act = Actuator("nrm-test-actuator")
+    sco = Scope("nrm-test-scope")
+    sen = Sensor("nrm-test-sensor")
+    sli = Slice("nrm-test-slice")
     # assert names, pointers, objects are instantiated underneath for each
 
     with Client() as nrmc:
@@ -30,16 +31,20 @@ def test_set_objs_to_client():
 
 
 def test_actuate():
-    act = Actuator("nrm-test-actuator", act_uuid)
+    print("test_actuate")
+    act = Actuator("nrm-test-actuator")
+    act.set_choices(12.0, 123.0, 1234.0, 12345.0)
+    act.set_value(1234.0)
     with Client() as nrmc:
         nrmc.actuators[act_uuid] = act
-        flag = nrmc.actuate(act, 1234)
+        flag = nrmc.actuate(act, 123.0)
         # assert flag == 0, read log?
 
 
 def test_send_event():
-    sco = Scope("nrm-test-scope", sco_uuid)
-    sen = Sensor("nrm-test-sensor", sen_uuid)
+    print("test_send_event")
+    sco = Scope("nrm-test-scope")
+    sen = Sensor("nrm-test-sensor")
     with Client() as nrmc:
         nrmc.scopes[sco_uuid] = sco
         nrmc.sensors[sen_uuid] = sen
@@ -48,12 +53,15 @@ def test_send_event():
 
 
 def test_event_callbacks():
+    print("test_event_callbacks")
     def print_event_info(*args):
         print("Responding to subscribed event")
         uuid, time, scope, value = args
         print(uuid, time, scope, value)
 
+    sco = Scope("nrm-test-scope")
     with Client() as nrmc:
+        nrmc.scopes[sco_uuid] = sco
         flag = nrmc.set_event_listener(print_event_info)
         # check if pyfn has made it into client struct?
         flag = nrmc.start_event_listener("test-report-numa-pwr")
@@ -61,12 +69,18 @@ def test_event_callbacks():
 
 
 def test_actuate_callbacks():
+    print("test_actuate_callbacks")
     def print_actuate_info(*args):
         print("Responding to actuation request")
         uuid, value = args
         print(uuid, value)
 
+
+    act = Actuator("nrm-test-actuator")
+    act.set_choices(12.0, 123.0, 1234.0, 12345.0)
+    act.set_value(1234.0)
     with Client() as nrmc:
+        nrmc.actuators[act_uuid] = act
         flag = nrmc.set_actuate_listener(print_actuate_info)
         # check if pyfn has made it into client struct?
         flag = nrmc.start_actuate_listener()

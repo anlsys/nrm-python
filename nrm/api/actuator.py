@@ -9,14 +9,14 @@ class Actuator:
     from nrm import Actuator, Client
     with Client("tcp://127.0.0.1", 2345, 3456) as nrmc:
 
-        act = Actuator(name="hello-act", uuid="abcd1234")
+        act = Actuator(name="hello-act")
         nrmc.actuators.append(act)
 
 
     ```
     """
 
-    def __init__(self, name: str = "nrm-actuator", uuid: str = "default-uuid"):
+    def __init__(self, name: str = "nrm-actuator"):
         self._c_actuator_name = ffi.new("char[]", bytes(name, "utf-8"))
         self._actuator_ptr = lib.nrm_actuator_create(
             self._c_actuator_name

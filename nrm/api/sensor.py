@@ -17,7 +17,7 @@ class Sensor:
     ```
     """
 
-    def __init__(self, name: str = "nrm-sensor", uuid: str = "default-uuid"):
+    def __init__(self, name: str = "nrm-sensor"):
         self._c_sensor_name = ffi.new("char[]", bytes(name, "utf-8"))
         self._sensor_ptr = lib.nrm_sensor_create(
             self._c_sensor_name

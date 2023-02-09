@@ -93,7 +93,9 @@ class Client:
         py_client = ffi.new_handle(self)
         self.py_client = py_client
         self._event_listener = event_listener
-        flag = lib.nrm_client_set_event_Pylistener(self._c_client, py_client, lib._event_listener_wrap)
+        flag = lib.nrm_client_set_event_Pylistener(
+            self._c_client, py_client, lib._event_listener_wrap
+        )
 
     def start_event_listener(self, topic: str) -> int:
         topic = ffi.new("char []", bytes(topic, "utf-8"))
@@ -104,7 +106,9 @@ class Client:
         py_client = ffi.new_handle(self)
         self.py_client = py_client
         self._actuate_listener = actuate_listener
-        flag = lib.nrm_client_set_actuate_Pylistener(self._c_client, py_client, lib._actuate_listener_wrap)
+        flag = lib.nrm_client_set_actuate_Pylistener(
+            self._c_client, py_client, lib._actuate_listener_wrap
+        )
 
     def start_actuate_listener(self) -> int:
         pass
@@ -122,6 +126,7 @@ class Client:
 @ffi.def_extern()
 def _event_listener_wrap(sensor_uuid, timespec, scope, value, py_client):
     return ffi.from_handle(py_client)._event(sensor_uuid, timespec, scope, value)
+
 
 @ffi.def_extern()
 def _actuate_listener_wrap(uuid, value, py_client):

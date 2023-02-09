@@ -126,6 +126,12 @@ int nrm_client_start_actuate_listener(const nrm_client_t *client);
 
 void nrm_client_destroy(nrm_client_t **client);
 
+int nrm_actuator_set_value(nrm_actuator_t *actuator, double value);
+
+int nrm_actuator_set_choices(nrm_actuator_t *actuator,
+                             size_t nchoices,
+                             double *choices);
+
 """
 )
 

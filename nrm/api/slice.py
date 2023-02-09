@@ -18,7 +18,7 @@ class Slice:
     ```
     """
 
-    def __init__(self, name: str = "nrm-slice", uuid: str = "default-uuid"):
+    def __init__(self, name: str = "nrm-slice"):
         self._c_slice_name = ffi.new("char[]", bytes(name, "utf-8"))
         self._slice_ptr = lib.nrm_slice_create(
             self._c_slice_name

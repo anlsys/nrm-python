@@ -99,7 +99,7 @@ class Client:
     def start_event_listener(self, topic: str) -> int:
         topic = ffi.new("char []", bytes(topic, "utf-8"))
         topic_as_nrm_string_t = ffi.new("nrm_string_t *", topic)
-        return lib.nrm_client_start_event_Pylistener(self._c_client, topic)
+        return lib.nrm_client_start_event_listener(self._c_client, topic)
 
     def set_actuate_listener(self, actuate_listener: Callable) -> int:
         py_client = ffi.new_handle(self)
@@ -110,7 +110,7 @@ class Client:
         )
 
     def start_actuate_listener(self) -> int:
-        return lib.nrm_client_start_actuate_Pylistener(self._c_client)
+        return lib.nrm_client_start_actuate_listener(self._c_client)
 
     def _event(self, sensor_uuid, time, scope, value):
         print("GOT EVENT!", flush=True)

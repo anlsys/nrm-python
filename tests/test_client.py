@@ -35,7 +35,7 @@ def test_actuate():
     assert not act.set_value(1234.0)
     with Client() as nrmc:
         nrmc.actuators[act_uuid] = act
-        flag = nrmc.actuate(act, 123.0)
+        assert not nrmc.actuate(act, 123.0)
 
 
 def test_send_event():
@@ -56,10 +56,14 @@ def test_event_callbacks():
         print(uuid, time, scope, value)
 
     sco = Scope("nrm-test-scope")
+    sen = Sensor("test-report-numa-pwr")
     with Client() as nrmc:
         nrmc.scopes[sco_uuid] = sco
+        nrmc.sensors[sen_uuid] = sen
         assert not nrmc.set_event_listener(print_event_info)
         assert not nrmc.start_event_listener("test-report-numa-pwr")
+        assert not nrmc.send_event(sen, sco, 1234)
+        time.sleep(0.25)
 
 
 def test_actuate_callbacks():
@@ -77,6 +81,8 @@ def test_actuate_callbacks():
         nrmc.actuators[act_uuid] = act
         assert not nrmc.set_actuate_listener(print_actuate_info)
         assert not nrmc.start_actuate_listener()
+        assert not nrmc.actuate(act, 123.0)
+        time.sleep(0.25)
 
 
 if __name__ == "__main__":

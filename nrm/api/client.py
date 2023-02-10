@@ -1,7 +1,6 @@
 from nrm.api._build._nrm_cffi import ffi, lib
 from typing import Union, List, Callable
 from dataclasses import dataclass, field
-import inspect
 import time
 
 
@@ -93,41 +92,42 @@ class Client:
         py_client = ffi.new_handle(self)
         self.py_client = py_client
         self._event_listener = event_listener
-        flag = lib.nrm_client_set_event_Pylistener(
+        return lib.nrm_client_set_event_Pylistener(
             self._c_client, py_client, lib._event_listener_wrap
         )
 
     def start_event_listener(self, topic: str) -> int:
         topic = ffi.new("char []", bytes(topic, "utf-8"))
         topic_as_nrm_string_t = ffi.new("nrm_string_t *", topic)
-        # lib.nrm_client_start_event_Pylistener
+        return lib.nrm_client_start_event_Pylistener(self._c_client, topic)
 
     def set_actuate_listener(self, actuate_listener: Callable) -> int:
         py_client = ffi.new_handle(self)
         self.py_client = py_client
         self._actuate_listener = actuate_listener
-        flag = lib.nrm_client_set_actuate_Pylistener(
+        return lib.nrm_client_set_actuate_Pylistener(
             self._c_client, py_client, lib._actuate_listener_wrap
         )
 
     def start_actuate_listener(self) -> int:
-        pass
-        # lib.nrm_client_start_event_Pylistener
+        return lib.nrm_client_start_actuate_Pylistener(self._c_client)
 
     def _event(self, sensor_uuid, time, scope, value):
-        print("GOT EVENT!")
+        print("GOT EVENT!", flush=True)
         return self._event_listener(sensor_uuid, time, scope, value)
 
     def _actuate(self, uuid, value):
-        print("GOT ACTUATE")
+        print("GOT ACTUATE", flush=True)
         return self._actuate_listener(uuid, value)
 
 
 @ffi.def_extern()
-def _event_listener_wrap(sensor_uuid, timespec, scope, value, py_client):
+def _event_listener_wrap(sensor_uuid, timespec, scope, value, py_client):  # see build.py for the C declaration of this and _actuate_listener_wrap
+    print("HELLO", flush=True)
     return ffi.from_handle(py_client)._event(sensor_uuid, timespec, scope, value)
 
 
 @ffi.def_extern()
 def _actuate_listener_wrap(uuid, value, py_client):
+    print("WORLD", flush=True)
     return ffi.from_handle(py_client)._actuate(uuid, value)

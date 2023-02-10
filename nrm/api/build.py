@@ -61,10 +61,10 @@ int nrm_client_set_actuate_Pylistener(nrm_client_t *client,
                                       void *pyclient,
                                       nrm_client_actuate_listener_fn *fn);
 
-int nrm_client_start_event_Pylistener(const nrm_client_t *client,
+int nrm_client_start_event_Pylistener(nrm_client_t *client,
                                       nrm_string_t topic);
 
-int nrm_client_start_actuate_Pylistener(const nrm_client_t *client);
+int nrm_client_start_actuate_Pylistener(nrm_client_t *client);
 
 // END PY STUFF
 

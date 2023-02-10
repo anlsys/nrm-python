@@ -24,3 +24,9 @@ class Actuator:
 
     def __delitem__(self, key):
         lib.nrm_actuator_destroy(self._actuator_ptr)
+
+    def set_choices(self, *cargs) -> int:
+        return lib.nrm_actuator_set_choices(self._actuator_ptr, len(cargs), list(cargs))
+
+    def set_value(self, value: float) -> int:
+        return lib.nrm_actuator_set_value(self._actuator_ptr, value)

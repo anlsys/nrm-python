@@ -20,25 +20,22 @@ def test_set_objs_to_client():
     sco = Scope("nrm-test-scope")
     sen = Sensor("nrm-test-sensor")
     sli = Slice("nrm-test-slice")
-    # assert names, pointers, objects are instantiated underneath for each
 
     with Client() as nrmc:
         nrmc.actuators[act_uuid] = act
         nrmc.scopes[sco_uuid] = sco
         nrmc.sensors[sen_uuid] = sen
         nrmc.slices[sli_uuid] = sli
-        # assert both py and C client contains new objects
 
 
 def test_actuate():
     print("test_actuate")
     act = Actuator("nrm-test-actuator")
-    act.set_choices(12.0, 123.0, 1234.0, 12345.0)
-    act.set_value(1234.0)
+    assert not act.set_choices(12.0, 123.0, 1234.0, 12345.0)
+    assert not act.set_value(1234.0)
     with Client() as nrmc:
         nrmc.actuators[act_uuid] = act
         flag = nrmc.actuate(act, 123.0)
-        # assert flag == 0, read log?
 
 
 def test_send_event():
@@ -48,8 +45,7 @@ def test_send_event():
     with Client() as nrmc:
         nrmc.scopes[sco_uuid] = sco
         nrmc.sensors[sen_uuid] = sen
-        flag = nrmc.send_event(sen, sco, 1234)
-        # assert flag == 0, read log?
+        assert not nrmc.send_event(sen, sco, 1234)
 
 
 def test_event_callbacks():
@@ -62,10 +58,8 @@ def test_event_callbacks():
     sco = Scope("nrm-test-scope")
     with Client() as nrmc:
         nrmc.scopes[sco_uuid] = sco
-        flag = nrmc.set_event_listener(print_event_info)
-        # check if pyfn has made it into client struct?
-        flag = nrmc.start_event_listener("test-report-numa-pwr")
-        # check logs?
+        assert not nrmc.set_event_listener(print_event_info)
+        assert not nrmc.start_event_listener("test-report-numa-pwr")
 
 
 def test_actuate_callbacks():
@@ -77,14 +71,12 @@ def test_actuate_callbacks():
 
 
     act = Actuator("nrm-test-actuator")
-    act.set_choices(12.0, 123.0, 1234.0, 12345.0)
-    act.set_value(1234.0)
+    assert not act.set_choices(12.0, 123.0, 1234.0, 12345.0)
+    assert not act.set_value(1234.0)
     with Client() as nrmc:
         nrmc.actuators[act_uuid] = act
-        flag = nrmc.set_actuate_listener(print_actuate_info)
-        # check if pyfn has made it into client struct?
-        flag = nrmc.start_actuate_listener()
-        # check logs?
+        assert not nrmc.set_actuate_listener(print_actuate_info)
+        assert not nrmc.start_actuate_listener()
 
 
 if __name__ == "__main__":

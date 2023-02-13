@@ -24,10 +24,10 @@ class Client:
     ```
     """
 
-    scopes: _NRMScopes = field(default_factory=NRMScopes)
-    sensors: _NRMSensors = field(default_factory=NRMSensors)
-    slices: _NRMSlices = field(default_factory=NRMSlices)
-    actuators: _NRMActuators = field(default_factory=NRMActuators)
+    scopes: NRMScopes = field(default_factory=NRMScopes)
+    sensors: NRMSensors = field(default_factory=NRMSensors)
+    slices: NRMSlices = field(default_factory=NRMSlices)
+    actuators: NRMActuators = field(default_factory=NRMActuators)
 
     def __enter__(
         self, uri: str = "tcp://127.0.0.1", pub_port: int = 2345, rpc_port: int = 3456

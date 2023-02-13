@@ -19,7 +19,7 @@ setup(
     ],
 
     packages=find_packages(),
-    install_requires=['msgpack', 'pyyaml', "warlock", "pyzmq", "tornado", "jsonschema"],
+    install_requires=['msgpack', 'pyyaml', "warlock", "pyzmq", "tornado", "jsonschema", "loguru", "cffi"],
     package_data={'nrm': ['schemas/*.json', 'schemas/*.yml']},
     scripts=['bin/nrmd']
 )

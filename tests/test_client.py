@@ -50,7 +50,6 @@ def test_send_event():
 
 def test_event_callbacks():
     print("test_event_callbacks")
-
     def print_event_info(*args):
         print("IN EVENT PYTHON CALLBACK: Responding to subscribed event")
         return 0
@@ -68,10 +67,8 @@ def test_event_callbacks():
         time.sleep(2)
         assert not nrmc.send_event(sen, sco, 1)
 
-
 def test_actuate_callbacks():
     print("test_actuate_callbacks")
-
     def print_actuate_info(*args):
         print("IN PYTHON ACTUATE CALLBACK: Responding to actuation request")
         return 0
@@ -88,7 +85,9 @@ def test_actuate_callbacks():
         assert not nrmc.actuate(act, 12345.0)
         time.sleep(2)
         assert not nrmc.actuate(act, 12.0)
-
+        time.sleep(2)
+        assert not act.set_value(123.0)
+        time.sleep(2)
 
 if __name__ == "__main__":
     test_client_init()

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright 2019 UChicago Argonne, LLC.
+# Copyright 2023 UChicago Argonne, LLC.
 # (c.f. AUTHORS, LICENSE)
 #
 # This file is part of the NRM project.
@@ -8,8 +8,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
 ###############################################################################
 
-from .actuator import Actuator
+from .components import Actuator, Scope, Sensor, Slice
 from .client import Client
-from .scope import Scope
-from .sensor import Sensor
-from .slice import Slice

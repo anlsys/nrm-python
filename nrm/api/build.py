@@ -29,6 +29,7 @@ typedef struct nrm_vector_s nrm_vector_t;
 typedef char *nrm_string_t;
 typedef struct timespec nrm_time_t;
 typedef nrm_string_t nrm_uuid_t;
+typedef struct pyinfo_s pyinfo_t;
 
 typedef int(nrm_client_event_listener_fn)(nrm_string_t sensor_uuid,
                                           nrm_time_t time,
@@ -47,19 +48,32 @@ extern "Python" int _event_listener_wrap(nrm_string_t sensor_uuid,
                                          nrm_time_t time,
                                          nrm_scope_t *scope,
                                          double value,
-                                         void *pyclient);
+                                         void *arg);
 
 extern "Python" int _actuate_listener_wrap(nrm_uuid_t *uuid,
                                            double value,
-                                           void *pyclient);
+                                           void *arg);
+
+int nrm_client_externpython_event(nrm_string_t sensor_uuid,
+                                  nrm_time_t time,
+                                  nrm_scope_t *scope,
+                                  double value,
+                                  void *arg);
+
+int nrm_client_externpython_actuate(nrm_uuid_t *uuid,
+                                    double value,
+                                    void *arg);
 
 int nrm_client_set_event_Pylistener(nrm_client_t *client,
-                                    void *pyclient,
-                                    nrm_client_event_listener_fn *fn);
+									void *pyinfo);
 
 int nrm_client_set_actuate_Pylistener(nrm_client_t *client,
-                                      void *pyclient,
-                                      nrm_client_actuate_listener_fn *fn);
+									  void *pyinfo);
+
+int nrm_pyinfo_create(pyinfo_t **pyinfo,
+					  void *pyclient,
+					  nrm_client_event_listener_fn *extern_user_fn,
+					  nrm_client_actuate_listener_fn *extern_actuate_fn);
 
 // END PY STUFF
 
@@ -109,13 +123,15 @@ int nrm_client_send_event(const nrm_client_t *client,
                           double value);
 
 int nrm_client_set_event_listener(nrm_client_t *client,
-                                  nrm_client_event_listener_fn fn);
+                                  nrm_client_event_listener_fn *fn,
+                                  void *arg);
 
 int nrm_client_start_event_listener(const nrm_client_t *client,
                                     nrm_string_t topic);
 
 int nrm_client_set_actuate_listener(nrm_client_t *client,
-                                    nrm_client_actuate_listener_fn fn);
+                                    nrm_client_actuate_listener_fn *fn,
+                                    void *arg);
 
 int nrm_client_start_actuate_listener(const nrm_client_t *client);
 

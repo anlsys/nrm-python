@@ -62,14 +62,23 @@ class Client:
         self, uri: str = "tcp://127.0.0.1", pub_port: int = 2345, rpc_port: int = 3456
     ):
         self._c_client_p = ffi.new("nrm_client_t **")
+        self._pyinfo_p = ffi.new("pyinfo_t **")
+        self._py_client = ffi.new_handle(self)
         self._c_uri = ffi.new("char[]", bytes(uri, "utf-8"))
         self.pub_port = pub_port
         self.rpc_port = rpc_port
-        flag = lib.nrm_init(ffi.NULL, ffi.NULL)
-        flag = lib.nrm_client_create(
+        assert not lib.nrm_init(ffi.NULL, ffi.NULL)
+        assert not lib.nrm_client_create(
             self._c_client_p, self._c_uri, self.pub_port, self.rpc_port
         )
         self._c_client = self._c_client_p[0]
+        assert not lib.nrm_pyinfo_create(
+            self._pyinfo_p,
+            self._py_client,
+            lib._event_listener_wrap,
+            lib._actuate_listener_wrap,
+        )
+        self._pyinfo = self._pyinfo_p[0]
 
         for d in [self.scopes, self.sensors, self.slices, self.actuators]:
             d._set_client(self._c_client)
@@ -89,12 +98,8 @@ class Client:
         )
 
     def set_event_listener(self, event_listener: Callable) -> int:
-        py_client = ffi.new_handle(self)
-        self.py_client = py_client
         self._event_listener = event_listener
-        return lib.nrm_client_set_event_Pylistener(
-            self._c_client, py_client, lib._event_listener_wrap
-        )
+        return lib.nrm_client_set_event_Pylistener(self._c_client, self._pyinfo)
 
     def start_event_listener(self, topic: str) -> int:
         topic = ffi.new("char []", bytes(topic, "utf-8"))
@@ -102,32 +107,26 @@ class Client:
         return lib.nrm_client_start_event_listener(self._c_client, topic)
 
     def set_actuate_listener(self, actuate_listener: Callable) -> int:
-        py_client = ffi.new_handle(self)
-        self.py_client = py_client
         self._actuate_listener = actuate_listener
-        return lib.nrm_client_set_actuate_Pylistener(
-            self._c_client, py_client, lib._actuate_listener_wrap
-        )
+        return lib.nrm_client_set_actuate_Pylistener(self._c_client, self._pyinfo)
 
     def start_actuate_listener(self) -> int:
         return lib.nrm_client_start_actuate_listener(self._c_client)
 
     def _event(self, sensor_uuid, time, scope, value):
-        print("GOT EVENT!", flush=True)
         return self._event_listener(sensor_uuid, time, scope, value)
 
     def _actuate(self, uuid, value):
-        print("GOT ACTUATE", flush=True)
         return self._actuate_listener(uuid, value)
 
 
 @ffi.def_extern()
-def _event_listener_wrap(sensor_uuid, timespec, scope, value, py_client):  # see build.py for the C declaration of this and _actuate_listener_wrap
-    print("HELLO", flush=True)
+def _event_listener_wrap(
+    sensor_uuid, timespec, scope, value, py_client
+):  # see build.py for the C declaration of this and _actuate_listener_wrap
     return ffi.from_handle(py_client)._event(sensor_uuid, timespec, scope, value)
 
 
 @ffi.def_extern()
 def _actuate_listener_wrap(uuid, value, py_client):
-    print("WORLD", flush=True)
     return ffi.from_handle(py_client)._actuate(uuid, value)

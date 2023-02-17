@@ -143,6 +143,14 @@ int nrm_actuator_set_choices(nrm_actuator_t *actuator,
                              size_t nchoices,
                              double *choices);
 
+void nrm_actuator_destroy(nrm_actuator_t **);
+
+int nrm_scope_destroy(nrm_scope_t *scope);
+
+void nrm_slice_destroy(nrm_slice_t **);
+
+void nrm_sensor_destroy(nrm_sensor_t **);
+
 """
 )
 

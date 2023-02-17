@@ -1,4 +1,5 @@
 from typing import Callable, List, Union
+from loguru import logger
 
 from nrm.api._build._nrm_cffi import ffi, lib
 
@@ -21,10 +22,13 @@ class Actuator:
         self._c_actuator_name = ffi.new("char[]", bytes(name, "utf-8"))
         self._actuator_ptr = lib.nrm_actuator_create(
             self._c_actuator_name
-        )  # intantiate a pointer?
+        )
 
-    def __delitem__(self, key):
+    def __del__(self):
         lib.nrm_actuator_destroy(self._actuator_ptr)
+
+    def close(self) -> int:
+        return lib.nrm_actuator_destroy(self._actuator_ptr)
 
     def set_choices(self, *cargs) -> int:
         return lib.nrm_actuator_set_choices(self._actuator_ptr, len(cargs), list(cargs))
@@ -40,11 +44,13 @@ class Scope:
         self._c_scope_name = ffi.new("char[]", bytes(name, "utf-8"))
         self._scope_ptr = lib.nrm_scope_create(
             self._c_scope_name
-        )  # intantiate a pointer?
+        )
 
-    def __delitem__(self):
-        lib.nrm_actuator_destroy(self._actuator_ptr)
+    def __del__(self):
+        lib.nrm_scope_destroy(self._scope_ptr)
 
+    def close(self) -> int:
+        return lib.nrm_scope_destroy(self._scope_ptr)
 
 class Sensor:
     """Sensor class for interacting with NRM C interface. Prototyped interface for client below.
@@ -65,11 +71,13 @@ class Sensor:
         self._c_sensor_name = ffi.new("char[]", bytes(name, "utf-8"))
         self._sensor_ptr = lib.nrm_sensor_create(
             self._c_sensor_name
-        )  # intantiate a pointer?
+        )
 
-    def __delitem__(self):
+    def __del__(self):
         lib.nrm_sensor_destroy(self._sensor_ptr)
 
+    def close(self) -> int:
+        return lib.nrm_sensor_destroy(self._sensor_ptr)
 
 class Slice:
     """Slice class for interacting with NRM C interface. Prototyped interface for client below.
@@ -91,11 +99,13 @@ class Slice:
         self._c_slice_name = ffi.new("char[]", bytes(name, "utf-8"))
         self._slice_ptr = lib.nrm_slice_create(
             self._c_slice_name
-        )  # intantiate a pointer?
+        )
 
-    def __delitem__(self, key):
+    def __del__(self):
         lib.nrm_slice_destroy(self._slice_ptr)
 
+    def close(self) -> int:
+        return lib.nrm_slice_destroy(self._slice_ptr)
 
 class _NRM_d(dict):
     def __init__(self, *args):

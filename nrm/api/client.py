@@ -81,6 +81,9 @@ class Client:
 
         Parameters
         ----------
+
+        Returns
+        -------
         """
         logger.debug(f"ACTUATING with (actuator: {actuator}), (value: {value})")
         return lib.nrm_client_actuate(self._c_client, actuator._actuator_ptr, value)
@@ -89,9 +92,12 @@ class Client:
         """
         Parameters
         ----------
+
+        Returns
+        -------
         """
         timespec = lib.nrm_time_fromns(time.time_ns())
-        logger.debug(f"SENDING EVENT with (sensor: {sensor}), (value: {value}), (Value: {value})")
+        logger.debug(f"SENDING EVENT with (Sensor: {sensor}), (Scope: {scope}), (Value: {value})")
         return lib.nrm_client_send_event(
             self._c_client, timespec, sensor._sensor_ptr, scope._scope_ptr, value
         )
@@ -100,6 +106,9 @@ class Client:
         """
         Parameters
         ----------
+
+        Returns
+        -------
         """
         self._event_listener = event_listener
         logger.debug(f"Setting event Python callback: {event_listener}")
@@ -109,6 +118,9 @@ class Client:
         """
         Parameters
         ----------
+
+        Returns
+        -------
         """
         topic = ffi.new("char []", bytes(topic, "utf-8"))
         topic_as_nrm_string_t = ffi.new("nrm_string_t *", topic)
@@ -119,6 +131,9 @@ class Client:
         """
         Parameters
         ----------
+
+        Returns
+        -------
         """
         self._actuate_listener = actuate_listener
         logger.debug(f"Setting actuate Python callback: {actuate_listener}")
@@ -131,6 +146,10 @@ class Client:
         """
         logger.debug(f"Starting actuate listener. Will call: {self._actuate_listener}")
         return lib.nrm_client_start_actuate_listener(self._c_client)
+
+    def _remove(self, obj_type: int, uuid: str) -> int:
+        # TODO: create nrm_string_t out of uuid
+        return lib.nrm_client_remove(self._c_client, obj_type, nrm_string_t_uuid)
 
     def _event(self, sensor_uuid, time, scope, value):
         logger.debug(f"Calling event callback: {self._event_listener}")

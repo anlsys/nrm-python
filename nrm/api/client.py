@@ -39,8 +39,9 @@ class Client:
         self.pub_port = pub_port
         self.rpc_port = rpc_port
 
-        assert not lib.nrm_init(ffi.NULL, ffi.NULL), \
-            "NRM library did not initialize successfully"
+        assert not lib.nrm_init(
+            ffi.NULL, ffi.NULL
+        ), "NRM library did not initialize successfully"
         logger.debug("NRM initialized")
 
         assert not lib.nrm_client_create(
@@ -60,7 +61,9 @@ class Client:
 
         for d in [self.scopes, self.sensors, self.slices, self.actuators]:
             d._set_client(self._c_client)
-        logger.debug("NRM client assigned to Scopes, Sensors, Slices, and Actuators dict subclasses")
+        logger.debug(
+            "NRM client assigned to Scopes, Sensors, Slices, and Actuators dict subclasses"
+        )
         logger.info("Client instance initialized. Starting")
         return self
 
@@ -81,34 +84,27 @@ class Client:
 
         Parameters
         ----------
-
-        Returns
-        -------
         """
         logger.debug(f"ACTUATING with (actuator: {actuator}), (value: {value})")
-        return lib.nrm_client_actuate(self._c_client, actuator._actuator_ptr, value)
+        return lib.nrm_client_actuate(self._c_client, actuator._actuator_ptr[0], value)
 
     def send_event(self, sensor: "Sensor", scope: "Scope", value: float) -> int:
         """
         Parameters
         ----------
-
-        Returns
-        -------
         """
         timespec = lib.nrm_time_fromns(time.time_ns())
-        logger.debug(f"SENDING EVENT with (Sensor: {sensor}), (Scope: {scope}), (Value: {value})")
+        logger.debug(
+            f"SENDING EVENT with (sensor: {sensor}), (value: {value}), (Value: {value})"
+        )
         return lib.nrm_client_send_event(
-            self._c_client, timespec, sensor._sensor_ptr, scope._scope_ptr, value
+            self._c_client, timespec, sensor._sensor_ptr[0], scope._scope_ptr, value
         )
 
     def set_event_listener(self, event_listener: Callable) -> int:
         """
         Parameters
         ----------
-
-        Returns
-        -------
         """
         self._event_listener = event_listener
         logger.debug(f"Setting event Python callback: {event_listener}")
@@ -118,9 +114,6 @@ class Client:
         """
         Parameters
         ----------
-
-        Returns
-        -------
         """
         topic = ffi.new("char []", bytes(topic, "utf-8"))
         topic_as_nrm_string_t = ffi.new("nrm_string_t *", topic)
@@ -131,9 +124,6 @@ class Client:
         """
         Parameters
         ----------
-
-        Returns
-        -------
         """
         self._actuate_listener = actuate_listener
         logger.debug(f"Setting actuate Python callback: {actuate_listener}")
@@ -147,9 +137,8 @@ class Client:
         logger.debug(f"Starting actuate listener. Will call: {self._actuate_listener}")
         return lib.nrm_client_start_actuate_listener(self._c_client)
 
-    def _remove(self, obj_type: int, uuid: str) -> int:
-        # TODO: create nrm_string_t out of uuid
-        return lib.nrm_client_remove(self._c_client, obj_type, nrm_string_t_uuid)
+    def remove(self, obj) -> int:
+        return lib.nrm_client_remove(self._c_client, obj.TYPE, obj._c_name)
 
     def _event(self, sensor_uuid, time, scope, value):
         logger.debug(f"Calling event callback: {self._event_listener}")

@@ -19,38 +19,40 @@ class Actuator:
     """
 
     def __init__(self, name: str = "nrm-actuator"):
-        self._c_actuator_name = ffi.new("char[]", bytes(name, "utf-8"))
-        self._actuator_ptr = lib.nrm_actuator_create(
-            self._c_actuator_name
-        )
+        self.TYPE = 3
+        self._actuator_ptr = ffi.new("nrm_actuator_t **")
+        self._c_name = ffi.new("char[]", bytes(name, "utf-8"))
+        self._actuator_ptr[0] = lib.nrm_actuator_create(self._c_name)
 
     def __del__(self):
         lib.nrm_actuator_destroy(self._actuator_ptr)
 
-    def close(self) -> int:
-        return lib.nrm_actuator_destroy(self._actuator_ptr)
+    def close(self):
+        lib.nrm_actuator_destroy(self._actuator_ptr)
 
     def set_choices(self, *cargs) -> int:
-        return lib.nrm_actuator_set_choices(self._actuator_ptr, len(cargs), list(cargs))
+        return lib.nrm_actuator_set_choices(
+            self._actuator_ptr[0], len(cargs), list(cargs)
+        )
 
     def set_value(self, value: float) -> int:
-        return lib.nrm_actuator_set_value(self._actuator_ptr, value)
+        return lib.nrm_actuator_set_value(self._actuator_ptr[0], value)
 
 
 class Scope:
     """Scope class for interacting with NRM C interface. Prototyped interface for scope below."""
 
     def __init__(self, name: str = "nrm-scope"):
-        self._c_scope_name = ffi.new("char[]", bytes(name, "utf-8"))
-        self._scope_ptr = lib.nrm_scope_create(
-            self._c_scope_name
-        )
+        self.TYPE = 2
+        self._c_name = ffi.new("char[]", bytes(name, "utf-8"))
+        self._scope_ptr = lib.nrm_scope_create(self._c_name)
 
     def __del__(self):
         lib.nrm_scope_destroy(self._scope_ptr)
 
     def close(self) -> int:
         return lib.nrm_scope_destroy(self._scope_ptr)
+
 
 class Sensor:
     """Sensor class for interacting with NRM C interface. Prototyped interface for client below.
@@ -68,16 +70,17 @@ class Sensor:
     """
 
     def __init__(self, name: str = "nrm-sensor"):
-        self._c_sensor_name = ffi.new("char[]", bytes(name, "utf-8"))
-        self._sensor_ptr = lib.nrm_sensor_create(
-            self._c_sensor_name
-        )
+        self.TYPE = 1
+        self._sensor_ptr = ffi.new("nrm_sensor_t **")
+        self._c_name = ffi.new("char[]", bytes(name, "utf-8"))
+        self._sensor_ptr[0] = lib.nrm_sensor_create(self._c_name)
 
     def __del__(self):
         lib.nrm_sensor_destroy(self._sensor_ptr)
 
-    def close(self) -> int:
-        return lib.nrm_sensor_destroy(self._sensor_ptr)
+    def close(self):
+        lib.nrm_sensor_destroy(self._sensor_ptr)
+
 
 class Slice:
     """Slice class for interacting with NRM C interface. Prototyped interface for client below.
@@ -96,16 +99,17 @@ class Slice:
     """
 
     def __init__(self, name: str = "nrm-slice"):
-        self._c_slice_name = ffi.new("char[]", bytes(name, "utf-8"))
-        self._slice_ptr = lib.nrm_slice_create(
-            self._c_slice_name
-        )
+        self.TYPE = 0
+        self._slice_ptr = ffi.new("nrm_slice_t **")
+        self._c_name = ffi.new("char[]", bytes(name, "utf-8"))
+        self._slice_ptr[0] = lib.nrm_slice_create(self._c_name)
 
     def __del__(self):
         lib.nrm_slice_destroy(self._slice_ptr)
 
-    def close(self) -> int:
-        return lib.nrm_slice_destroy(self._slice_ptr)
+    def close(self):
+        lib.nrm_slice_destroy(self._slice_ptr)
+
 
 class _NRM_d(dict):
     def __init__(self, *args):
@@ -124,16 +128,16 @@ class NRMScopes(_NRM_d):
 class NRMSensors(_NRM_d):
     def __setitem__(self, uuid_key: str, nrm_object: "Sensor"):
         super().__setitem__(uuid_key, nrm_object)
-        return lib.nrm_client_add_sensor(self._c_client, nrm_object._sensor_ptr)
+        return lib.nrm_client_add_sensor(self._c_client, nrm_object._sensor_ptr[0])
 
 
 class NRMSlices(_NRM_d):
     def __setitem__(self, uuid_key: str, nrm_object: "Slice"):
         super().__setitem__(uuid_key, nrm_object)
-        return lib.nrm_client_add_slice(self._c_client, nrm_object._slice_ptr)
+        return lib.nrm_client_add_slice(self._c_client, nrm_object._slice_ptr[0])
 
 
 class NRMActuators(_NRM_d):
     def __setitem__(self, uuid_key: str, nrm_object: "Actuator"):
         super().__setitem__(uuid_key, nrm_object)
-        return lib.nrm_client_add_actuator(self._c_client, nrm_object._actuator_ptr)
+        return lib.nrm_client_add_actuator(self._c_client, nrm_object._actuator_ptr[0])

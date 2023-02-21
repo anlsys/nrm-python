@@ -26,6 +26,8 @@ def test_set_objs_to_client():
         nrmc.scopes[sco_uuid] = sco
         nrmc.sensors[sen_uuid] = sen
         nrmc.slices[sli_uuid] = sli
+        nrmc.remove(act)
+        act.close()
 
 
 def test_actuate():
@@ -36,6 +38,8 @@ def test_actuate():
     with Client() as nrmc:
         nrmc.actuators[act_uuid] = act
         assert not nrmc.actuate(act, 123.0)
+        nrmc.remove(act)
+        act.close()
 
 
 def test_send_event():
@@ -50,6 +54,7 @@ def test_send_event():
 
 def test_event_callbacks():
     print("test_event_callbacks")
+
     def print_event_info(*args):
         print("IN EVENT PYTHON CALLBACK: Responding to subscribed event")
         return 0
@@ -62,13 +67,15 @@ def test_event_callbacks():
         assert not nrmc.set_event_listener(print_event_info)
         assert not nrmc.start_event_listener("test-report-numa-pwr")
         assert not nrmc.send_event(sen, sco, 1234)
-        time.sleep(2)
+        time.sleep(1)
         assert not nrmc.send_event(sen, sco, 12)
-        time.sleep(2)
+        time.sleep(1)
         assert not nrmc.send_event(sen, sco, 1)
+
 
 def test_actuate_callbacks():
     print("test_actuate_callbacks")
+
     def print_actuate_info(*args):
         print("IN PYTHON ACTUATE CALLBACK: Responding to actuation request")
         return 0
@@ -81,13 +88,16 @@ def test_actuate_callbacks():
         assert not nrmc.set_actuate_listener(print_actuate_info)
         assert not nrmc.start_actuate_listener()
         assert not nrmc.actuate(act, 123.0)
-        time.sleep(2)
+        time.sleep(1)
         assert not nrmc.actuate(act, 12345.0)
-        time.sleep(2)
+        time.sleep(1)
         assert not nrmc.actuate(act, 12.0)
-        time.sleep(2)
+        time.sleep(1)
         assert not act.set_value(123.0)
-        time.sleep(2)
+        time.sleep(1)
+        nrmc.remove(act)
+        act.close()
+
 
 if __name__ == "__main__":
     test_client_init()

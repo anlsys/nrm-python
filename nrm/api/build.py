@@ -114,8 +114,6 @@ int nrm_client_find(const nrm_client_t *client,
                     const char *uuid,
                     nrm_vector_t **results);
 
-int nrm_client_remove(const nrm_client_t *client, int type, nrm_string_t uuid);
-
 int nrm_client_send_event(const nrm_client_t *client,
                           nrm_time_t time,
                           nrm_sensor_t *sensor,
@@ -150,6 +148,15 @@ int nrm_scope_destroy(nrm_scope_t *scope);
 void nrm_slice_destroy(nrm_slice_t **);
 
 void nrm_sensor_destroy(nrm_sensor_t **);
+
+int nrm_client_remove_actuator(const nrm_client_t *client,
+                               nrm_actuator_t *actuator);
+
+int nrm_client_remove_slice(const nrm_client_t *client, nrm_slice_t *slice);
+
+int nrm_client_remove_sensor(const nrm_client_t *client, nrm_sensor_t *sensor);
+
+int nrm_client_remove_scope(const nrm_client_t *client, nrm_scope_t *scope);
 
 """
 )

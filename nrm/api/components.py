@@ -19,7 +19,6 @@ class Actuator:
     """
 
     def __init__(self, name: str = "nrm-actuator"):
-        self.TYPE = 3
         self._actuator_ptr = ffi.new("nrm_actuator_t **")
         self._c_name = ffi.new("char[]", bytes(name, "utf-8"))
         self._actuator_ptr[0] = lib.nrm_actuator_create(self._c_name)
@@ -43,7 +42,6 @@ class Scope:
     """Scope class for interacting with NRM C interface. Prototyped interface for scope below."""
 
     def __init__(self, name: str = "nrm-scope"):
-        self.TYPE = 2
         self._c_name = ffi.new("char[]", bytes(name, "utf-8"))
         self._scope_ptr = lib.nrm_scope_create(self._c_name)
 
@@ -70,7 +68,6 @@ class Sensor:
     """
 
     def __init__(self, name: str = "nrm-sensor"):
-        self.TYPE = 1
         self._sensor_ptr = ffi.new("nrm_sensor_t **")
         self._c_name = ffi.new("char[]", bytes(name, "utf-8"))
         self._sensor_ptr[0] = lib.nrm_sensor_create(self._c_name)
@@ -99,7 +96,6 @@ class Slice:
     """
 
     def __init__(self, name: str = "nrm-slice"):
-        self.TYPE = 0
         self._slice_ptr = ffi.new("nrm_slice_t **")
         self._c_name = ffi.new("char[]", bytes(name, "utf-8"))
         self._slice_ptr[0] = lib.nrm_slice_create(self._c_name)

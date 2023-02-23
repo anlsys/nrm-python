@@ -4,7 +4,16 @@ from dataclasses import dataclass, field
 from typing import Callable, List, Union
 
 from nrm.api._build._nrm_cffi import ffi, lib
-from nrm.api.components import NRMActuators, NRMScopes, NRMSensors, NRMSlices
+from nrm.api.components import (
+    NRMActuators,
+    NRMScopes,
+    NRMSensors,
+    NRMSlices,
+    Actuator,
+    Scope,
+    Sensor,
+    Slice,
+)
 
 
 @dataclass
@@ -138,7 +147,15 @@ class Client:
         return lib.nrm_client_start_actuate_listener(self._c_client)
 
     def remove(self, obj) -> int:
-        return lib.nrm_client_remove(self._c_client, obj.TYPE, obj._c_name)
+
+        if isinstance(obj, Actuator):
+            return lib.nrm_client_remove_actuator(self._c_client, obj._actuator_ptr[0])
+        elif isinstance(obj, Slice):
+            return lib.nrm_client_remove_slice(self._c_client, obj._slice_ptr[0])
+        elif isinstance(obj, Sensor):
+            return lib.nrm_client_remove_sensor(self._c_client, obj._sensor_ptr[0])
+        else:
+            return lib.nrm_client_remove_scope(self._c_client, obj._scope_ptr)
 
     def _event(self, sensor_uuid, time, scope, value):
         logger.debug(f"Calling event callback: {self._event_listener}")

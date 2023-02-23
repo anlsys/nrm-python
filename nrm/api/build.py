@@ -3,7 +3,7 @@ from cffi import FFI
 ffi = FFI()
 
 ffi.set_source(
-    "_build._nrm_cffi",
+    "nrm.api._build._nrm_cffi",
     """
     #include "nrm.h"
     """,

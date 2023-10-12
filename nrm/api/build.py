@@ -96,7 +96,7 @@ int nrm_client_create(nrm_client_t **client,
                       int pub_port,
                       int rpc_port);
 
-int nrm_client_actuate(nrm_client_t *client,
+int nrm_client_actuate(const nrm_client_t *client,
                        nrm_actuator_t *actuator,
                        double value);
 

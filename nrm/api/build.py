@@ -96,42 +96,46 @@ int nrm_client_create(nrm_client_t **client,
                       int pub_port,
                       int rpc_port);
 
-int nrm_client_actuate(const nrm_client_t *client,
+int nrm_client_actuate(nrm_client_t *client,
                        nrm_actuator_t *actuator,
                        double value);
 
-int nrm_client_add_actuator(const nrm_client_t *client,
+int nrm_client_add_actuator(nrm_client_t *client,
                             nrm_actuator_t *actuator);
 
-int nrm_client_add_scope(const nrm_client_t *client, nrm_scope_t *scope);
+int nrm_client_add_scope(nrm_client_t *client, nrm_scope_t *scope);
 
-int nrm_client_add_sensor(const nrm_client_t *client, nrm_sensor_t *sensor);
+int nrm_client_add_sensor(nrm_client_t *client, nrm_sensor_t *sensor);
 
-int nrm_client_add_slice(const nrm_client_t *client, nrm_slice_t *slice);
+int nrm_client_add_slice(nrm_client_t *client, nrm_slice_t *slice);
 
-int nrm_client_find(const nrm_client_t *client,
+int nrm_client_find(nrm_client_t *client,
                     int type,
                     const char *uuid,
                     nrm_vector_t **results);
 
-int nrm_client_send_event(const nrm_client_t *client,
+int nrm_client_send_event(nrm_client_t *client,
                           nrm_time_t time,
                           nrm_sensor_t *sensor,
                           nrm_scope_t *scope,
                           double value);
 
+int nrm_client_send_exit(nrm_client_t *client);
+
+int nrm_client_send_tick(nrm_client_t *client);
+
 int nrm_client_set_event_listener(nrm_client_t *client,
                                   nrm_client_event_listener_fn *fn,
                                   void *arg);
 
-int nrm_client_start_event_listener(const nrm_client_t *client,
+int nrm_client_start_event_listener(nrm_client_t *client,
                                     nrm_string_t topic);
 
 int nrm_client_set_actuate_listener(nrm_client_t *client,
                                     nrm_client_actuate_listener_fn *fn,
                                     void *arg);
 
-int nrm_client_start_actuate_listener(const nrm_client_t *client);
+int nrm_client_start_actuate_listener(nrm_client_t *client);
 
 void nrm_client_destroy(nrm_client_t **client);
 
@@ -149,14 +153,14 @@ void nrm_slice_destroy(nrm_slice_t **);
 
 void nrm_sensor_destroy(nrm_sensor_t **);
 
-int nrm_client_remove_actuator(const nrm_client_t *client,
+int nrm_client_remove_actuator(nrm_client_t *client,
                                nrm_actuator_t *actuator);
 
-int nrm_client_remove_slice(const nrm_client_t *client, nrm_slice_t *slice);
+int nrm_client_remove_slice(nrm_client_t *client, nrm_slice_t *slice);
 
-int nrm_client_remove_sensor(const nrm_client_t *client, nrm_sensor_t *sensor);
+int nrm_client_remove_sensor(nrm_client_t *client, nrm_sensor_t *sensor);
 
-int nrm_client_remove_scope(const nrm_client_t *client, nrm_scope_t *scope);
+int nrm_client_remove_scope(nrm_client_t *client, nrm_scope_t *scope);
 
 """
 )

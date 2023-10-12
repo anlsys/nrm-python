@@ -157,6 +157,14 @@ class Client:
         else:
             return lib.nrm_client_remove_scope(self._c_client, obj._scope_ptr)
 
+    def send_exit(self) -> int:
+        logger.debug("Sending daemon EXIT request")
+        return lib.nrm_client_send_exit(self._c_client)
+
+    def send_tick(self) -> int:
+        logger.debug("Sending daemon TICK request")
+        return lib.nrm_client_send_tick(self._c_client)
+
     def _event(self, sensor_uuid, time, scope, value):
         logger.debug(f"Calling event callback: {self._event_listener}")
         return self._event_listener(sensor_uuid, time, scope, value)

@@ -22,6 +22,4 @@ setup(
     setup_requires=["cffi"],
     cffi_modules=["nrm/api/build.py:ffi"],
     install_requires=['msgpack', 'pyyaml', "warlock", "pyzmq", "tornado", "jsonschema", "loguru", "cffi"],
-    package_data={'nrm': ['schemas/*.json', 'schemas/*.yml']},
-    scripts=['bin/nrmd']
 )

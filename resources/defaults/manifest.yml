@@ -1,4 +1,0 @@
-app:
-  instrumentation:
-  perfwrapper:
-name: default

@@ -23,10 +23,11 @@ typedef struct timespec{
     long tv_nsec;
 };
 
+typedef struct timespec nrm_time_t;
+
 nrm_time_t nrm_time_fromns(int64_t ns);
 typedef char *nrm_string_t;
 typedef nrm_string_t nrm_uuid_t;
-typedef struct timespec nrm_time_t;
 typedef struct nrm_vector_s nrm_vector_t;
 typedef struct nrm_scope nrm_scope_t;
 

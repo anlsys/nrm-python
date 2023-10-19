@@ -1,5 +1,6 @@
 from cffi import FFI
 import subprocess
+import os
 
 ffi = FFI()
 
@@ -11,7 +12,7 @@ ffi.set_source(
     libraries=["nrm"],
 )
 
-nrmh = subprocess.Popen(["locate", "nrm.h"], stdout=subprocess.PIPE).communicate()[0].decode().split("\n")[0]
+nrmh = subprocess.Popen(["find", os.environ["HOME"], "/usr/local", "-name", "nrm.h"], stdout=subprocess.PIPE).communicate()[0].decode().split("\n")[0]
 
 cdef_base = \
 """

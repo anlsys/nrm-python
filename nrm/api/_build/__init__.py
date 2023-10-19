@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 ###############################################################################
 # Copyright 2019 UChicago Argonne, LLC.
 # (c.f. AUTHORS, LICENSE)
@@ -8,17 +7,3 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 ###############################################################################
-
-import sys
-from nrm.sharedlib import WrapEither, Lib
-import nrm.daemon
-import os
-from ctypes.util import find_library
-
-nrmcoreso = find_library("nrm-core")
-if not nrmcoreso:
-    nrmcoreso = os.environ.get("NRMSO")
-
-with Lib(nrmcoreso) as lib:
-    cfg = lib.cli(sys.argv[1:])
-    nrm.daemon.runner(cfg, lib)

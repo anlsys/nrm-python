@@ -1,6 +1,6 @@
 # NRM Python
 
-Python binaries and notebook infrastructure on top of nrm-core.
+Python binaries and notebook infrastructure on top of libnrm.
 
 Currently contains the official nrm daemon implementation, as well as
 additional python modules to talk to the NRM from a python application, both

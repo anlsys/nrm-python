@@ -12,7 +12,10 @@ ffi.set_source(
     libraries=["nrm"],
 )
 
-nrmh = subprocess.Popen(["find", os.environ["HOME"], "/usr/local", "-name", "nrm.h"], stdout=subprocess.PIPE).communicate()[0].decode().split("\n")[0]
+def my_temporary_header_locator():
+    return subprocess.Popen(["find", "../libnrm", "-name", "nrm.h"], stdout=subprocess.PIPE).communicate()[0].decode().split("\n")[0]
+
+nrmh = my_temporary_header_locator()
 
 cdef_base = \
 """
@@ -53,8 +56,21 @@ int nrm_scope_destroy(nrm_scope_t *scope);
 with open(nrmh, "r") as f:
     lines = f.readlines()
 
+avoid_tokens = ["#", "extern \"C\" {", "	nrm_log_printf("]
+avoid_block = [
+"\tdo {                                                                   \\\n",
+"\t\tchar *__nrm_errstr = strerror(errno);                          \\\n",
+"\t\tnrm_log_printf(NRM_LOG_ERROR, __FILE__, __LINE__,              \\\n",
+"\t\t               __VA_ARGS__);                                   \\\n",
+"\t\tnrm_log_printf(NRM_LOG_ERROR, __FILE__, __LINE__,              \\\n",
+"\t\t               \"perror: %s\\n\", __nrm_errstr);                  \\\n",
+"\t} while (0)\n",
+]
+
 for line in lines:
-    cdef_base += line
+    if not any([line.startswith(token) for token in avoid_tokens]) and line not in avoid_block:
+        cdef_base += line
+
 
 ffi.cdef(cdef_base)
 
